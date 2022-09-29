@@ -48,3 +48,13 @@ Thumbs.db
 *.mov
 *.wmv
 
+# Virtualenv
+venv/
+
+
+# Tests
+.coverage
+.pytest-cache
+
+# Environment variables
+.env

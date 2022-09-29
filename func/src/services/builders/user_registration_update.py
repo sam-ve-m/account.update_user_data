@@ -500,6 +500,17 @@ class UpdateCustomerRegistrationBuilder:
 
         return self
 
+    def address_complement(self):
+        old_address_phone = self.__old_personal_data.get("address", {}).get("complement")
+        if new_address_phone := self._get_new_value("address", "complement"):
+            self._update_modified_data(
+                levels=("address", "complement"),
+                old_field=old_address_phone,
+                new_filed=new_address_phone,
+            )
+
+        return self
+
     def external_exchange_account_politically_exposed_us(self):
         old_is_politically_exposed = (
             self.__old_personal_data.get("external_exchange_requirements", {})
@@ -692,6 +703,7 @@ class UpdateCustomerRegistrationBuilder:
             .address_neighborhood()
             .address_state()
             .address_phone()
+            .address_complement()
             .external_exchange_account_politically_exposed_us()
             .external_exchange_account_exchange_member_us()
             .external_exchange_account_time_experience_us()

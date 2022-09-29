@@ -284,6 +284,10 @@ class ZipCodeSource(Source):
     value: constr(regex=r"^[0-9]{5}-[\d]{3}")
 
 
+class ComplementSource(Source):
+    value: constr(max_length=20)
+
+
 class PoliticallyExposed(Source):
     value: bool
 
@@ -364,6 +368,7 @@ class UserAddressDataUpdate(BaseModel):
     number: Optional[AddressNumberSource]
     zip_code: Optional[ZipCodeSource]
     phone: Optional[PhoneSource]
+    complement: Optional[ComplementSource]
 
 
 class ExternalExchangeAccountUsUpdate(BaseModel):

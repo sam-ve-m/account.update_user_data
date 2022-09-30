@@ -25,9 +25,3 @@ class UserReviewModel:
     async def get_new_user_data(self):
         del self.new_user_registration_data["_id"]
         return self.new_user_registration_data
-
-    async def get_iara_message_template(self):
-        message = {
-            "unique_id": self.unique_id,
-        }
-        return message

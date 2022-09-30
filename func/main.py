@@ -1,3 +1,8 @@
+from http import HTTPStatus
+
+from etria_logger import Gladsheim
+from flask import request, Response, Request
+
 from src.domain.enums.code import InternalCode
 from src.domain.exceptions.exceptions import (
     ErrorOnDecodeJwt,
@@ -21,11 +26,6 @@ from src.domain.user_review.validator import UserUpdateData
 from src.services.jwt import JwtService
 from src.services.user_enumerate_data import UserEnumerateService
 from src.services.user_review import UserReviewDataService
-
-from http import HTTPStatus
-
-from etria_logger import Gladsheim
-from flask import request, Response, Request
 
 
 async def update_user_data(request: Request = request) -> Response:

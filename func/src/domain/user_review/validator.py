@@ -401,3 +401,10 @@ class UserUpdateData(BaseModel):
     documents: Optional[UserDocumentsDataUpdate]
     address: Optional[UserAddressDataUpdate]
     external_exchange_account_us: Optional[ExternalExchangeAccountUsUpdate]
+
+    @root_validator()
+    def validate(cls, values: Dict[str, Any]):
+        for key, value in values.items():
+            if value is not None:
+                return values
+        raise ValueError("At least one update is required")

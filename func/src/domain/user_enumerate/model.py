@@ -1,6 +1,6 @@
 from ...domain.user_review.validator import UserUpdateData
 
-from typing import Optional
+from typing import Optional, Any
 
 
 class UserEnumerateDataModel:
@@ -8,32 +8,16 @@ class UserEnumerateDataModel:
         self.user_review_data = payload_validated.dict()
 
     async def get_activity(self) -> Optional[int]:
-        activity_code = (
-            (self.user_review_data.get("personal") or {})
-            .get("occupation_activity", {})
-            .get("value")
-        )
+        activity_code = self.get_value("personal.occupation_activity.value")
         return activity_code
 
     async def get_combination_birth_place(self) -> Optional[dict]:
         if self.user_review_data.get("personal") is None:
             return
 
-        personal_country = (
-            self.user_review_data.get("personal")
-            .get("birth_place_country", {})
-            .get("value")
-        )
-        personal_state = (
-            self.user_review_data.get("personal")
-            .get("birth_place_state", {})
-            .get("value")
-        )
-        personal_city = (
-            self.user_review_data.get("personal")
-            .get("birth_place_city", {})
-            .get("value")
-        )
+        personal_country = self.get_value("personal.birth_place_country.value")
+        personal_state = self.get_value("personal.birth_place_state.value")
+        personal_city = self.get_value("personal.birth_place_city.value")
         birth_place_combination = {
             "country": personal_country,
             "state": personal_state,
@@ -48,15 +32,9 @@ class UserEnumerateDataModel:
         if self.user_review_data.get("address") is None:
             return
 
-        country_address = (
-            self.user_review_data.get("address").get("country", {}).get("value")
-        )
-        state_address = (
-            self.user_review_data.get("address").get("state", {}).get("value")
-        )
-        city_address = (
-            self.user_review_data.get("address").get("city", {}).get("value")
-        )
+        country_address = self.get_value("address.country.value")
+        state_address = self.get_value("address.state.value")
+        city_address = self.get_value("address.city.value")
         address_combination = {
             "country": country_address,
             "state": state_address,
@@ -74,41 +52,35 @@ class UserEnumerateDataModel:
         )
         if not foreign_account_tax:
             return
-        foreign_account_tax_list = foreign_account_tax.get("value")
+        foreign_account_tax_list = foreign_account_tax["value"]
         countries = [
-            tax_residence.get("country") for tax_residence in foreign_account_tax_list
+            tax_residence["country"] for tax_residence in foreign_account_tax_list
         ]
         return countries
 
     async def get_document_state(self) -> Optional[str]:
-        if self.user_review_data.get("documents") is None:
-            return
-        document_state = (
-            self.user_review_data.get("documents").get("state", {}).get("value")
-        )
+        document_state = self.get_value("documents.state.value")
         return document_state
 
     async def get_marital_status(self) -> Optional[int]:
-        if self.user_review_data.get("marital") is None:
-            return
-        marital_code = (
-            self.user_review_data.get("marital").get("status", {}).get("value")
-        )
+        marital_code = self.get_value("marital.status.value")
         return marital_code
 
     async def get_nationalities(self) -> Optional[list]:
         nationalities = []
-        personal_nationality = (
-            (self.user_review_data.get("personal") or {})
-            .get("nationality", {})
-            .get("value")
-        )
-        current_marital_status = (self.user_review_data.get("marital") or {}).get("spouse")
+        personal_nationality = self.get_value("personal.nationality.value")
+        current_marital_status = self.get_value("marital.spouse.value")
         if personal_nationality:
             nationalities.append(personal_nationality)
         if current_marital_status:
-            spouse_nationality = (
-                current_marital_status.get("nationality")
-            )
+            spouse_nationality = current_marital_status["nationality"]
             nationalities.append(spouse_nationality)
         return nationalities
+
+    def get_value(self, field: str) -> Any:
+        parent_value = self.user_review_data
+        for field in field.split(sep="."):
+            parent_value = parent_value.get(field)
+            if parent_value is None:
+                return
+        return parent_value

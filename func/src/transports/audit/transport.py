@@ -31,5 +31,5 @@ class Audit:
             Gladsheim.error(
                 message="Audit::register_user_log::Error on trying to register log"
             )
-            raise ErrorOnSendAuditLog
+            raise ErrorOnSendAuditLog()
         return True

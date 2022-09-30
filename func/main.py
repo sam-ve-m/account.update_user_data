@@ -38,7 +38,7 @@ async def update_user_data(request: Request = request) -> Response:
         await UserEnumerateService(
             payload_validated=payload_validated
         ).validate_enumerate_params()
-        await UserReviewDataService.apply_rules_to_update_user_review(
+        await UserReviewDataService.apply_rules_to_update_user(
             unique_id=unique_id, payload_validated=payload_validated
         )
         response = ResponseModel(

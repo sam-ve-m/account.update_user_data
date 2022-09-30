@@ -45,7 +45,7 @@ class UserEnumerateService:
             return
         result = await EnumerateRepository.get_activity(activity_code=activity_code)
         if not result:
-            raise InvalidActivity
+            raise InvalidActivity()
 
     @staticmethod
     async def _validate_country_acronym(countries):
@@ -54,7 +54,7 @@ class UserEnumerateService:
         for country in countries:
             result = await EnumerateRepository.get_country(country_acronym=country)
             if not result:
-                raise InvalidCountryAcronym
+                raise InvalidCountryAcronym()
 
     @staticmethod
     async def _validate_marital_status(marital_code: int):
@@ -62,7 +62,7 @@ class UserEnumerateService:
             return
         result = await EnumerateRepository.get_marital_status(marital_code=marital_code)
         if not result:
-            raise InvalidMaritalStatus
+            raise InvalidMaritalStatus()
 
     @staticmethod
     async def _validate_nationality(nationalities: List):
@@ -73,7 +73,7 @@ class UserEnumerateService:
                 nationality_code=nationality_code
             )
             if not result:
-                raise InvalidNationality
+                raise InvalidNationality()
 
     @staticmethod
     async def _validate_state(state: str):
@@ -81,7 +81,7 @@ class UserEnumerateService:
             return
         result = await EnumerateRepository.get_state(state=state)
         if not result:
-            raise InvalidState
+            raise InvalidState()
 
     @staticmethod
     async def _validate_combination_place(combination_place: dict):
@@ -93,4 +93,4 @@ class UserEnumerateService:
             id_city=combination_place.get("city"),
         )
         if not result:
-            raise InvalidCity
+            raise InvalidCity()

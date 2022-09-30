@@ -22,5 +22,5 @@ class IaraClient:
                 message=f"Iara_client::send_to_email_verification_queue::Error when trying to send to"
                 f" iara::{message=}::{schema_type=}::{topic=}"
             )
-            raise ErrorOnSendIaraMessage
+            raise ErrorOnSendIaraMessage()
         return True

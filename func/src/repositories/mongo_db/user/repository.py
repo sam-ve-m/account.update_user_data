@@ -1,37 +1,30 @@
-from ..base_repository.base import MongoDbBaseRepository
-
 from etria_logger import Gladsheim
+
+from ..base_repository.base import MongoDbBaseRepository
 
 
 class UserRepository(MongoDbBaseRepository):
     @classmethod
-    async def find_one_by_unique_id(cls, unique_id: str) -> dict:
+    async def get_user(cls, unique_id: str) -> dict:
         collection = await cls._get_collection()
+        query = {"unique_id": unique_id}
         try:
-            user = await collection.find_one({"unique_id": unique_id})
+            user = await collection.find_one(query)
             return user
         except Exception as ex:
-            message = f"UserRepository::find_one_user::with this query::{unique_id=}"
+            message = f"UserRepository::get_user::with this query {query}"
             Gladsheim.error(error=ex, message=message)
             raise ex
 
     @classmethod
-    async def update_one_with_user_review_data(
-        cls, unique_id: str, new_user_registration_data: dict
-    ):
+    async def update_user(cls, unique_id: str, new_user_registration_data: dict):
         collection = await cls._get_collection()
         try:
             user_updated = await collection.update_one(
                 {"unique_id": unique_id}, {"$set": new_user_registration_data}
             )
-            advanced_step = await collection.update_one(
-                {"unique_id": unique_id}, {"$set": {"is_bureau_data_validated": True}}
-            )
-            return user_updated and advanced_step
+            return user_updated
         except Exception as ex:
-            message = (
-                f'UserRepository::update_one_with_user_complementary_data::error on update user review data":'
-                f"{new_user_registration_data=}"
-            )
+            message = f"UserRepository::update_user::error to update user data"
             Gladsheim.error(error=ex, message=message)
             raise ex

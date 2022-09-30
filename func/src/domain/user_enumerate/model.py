@@ -46,9 +46,8 @@ class UserEnumerateDataModel:
             return address_combination
 
     async def get_country_foreign_account_tax(self) -> Optional[list]:
-        foreign_account_tax = (
-            (self.user_review_data.get("personal") or {})
-            .get("foreign_account_tax")
+        foreign_account_tax = (self.user_review_data.get("personal") or {}).get(
+            "foreign_account_tax"
         )
         if not foreign_account_tax:
             return

@@ -501,7 +501,9 @@ class UpdateCustomerRegistrationBuilder:
         return self
 
     def address_complement(self):
-        old_address_phone = self.__old_personal_data.get("address", {}).get("complement")
+        old_address_phone = self.__old_personal_data.get("address", {}).get(
+            "complement"
+        )
         if new_address_phone := self._get_new_value("address", "complement"):
             self._update_modified_data(
                 levels=("address", "complement"),
@@ -663,7 +665,6 @@ class UpdateCustomerRegistrationBuilder:
                 new_filed=new_time_experience,
             )
         return self
-
 
     def build(self) -> Tuple[dict, dict]:
         (

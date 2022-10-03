@@ -131,8 +131,8 @@ class CnpjSource(Source):
 
         if not cnpj_origin == new_cnpj:
             raise ValueError("Invalid CNPJ")
-
-        return new_cnpj
+        new_cnpj_string = "".join(new_cnpj)
+        return new_cnpj_string
 
 
 class CpfSource(Source):

@@ -16,8 +16,6 @@ from src.domain.exceptions.exceptions import (
     InvalidActivity,
     InvalidMaritalStatus,
     InvalidCountryAcronym,
-    InvalidOnboardingCurrentStep,
-    OnboardingStepsStatusCodeNotOk,
     ErrorOnGetUniqueId,
     HighRiskActivityNotAllowed,
 )
@@ -43,7 +41,7 @@ async def update_user_data(request: Request = request) -> Response:
         )
         response = ResponseModel(
             success=True,
-            message="User review data successfully validated",
+            message="User data successfully updated",
             code=InternalCode.SUCCESS,
         ).build_http_response(status=HTTPStatus.OK)
         return response
@@ -55,24 +53,6 @@ async def update_user_data(request: Request = request) -> Response:
             code=InternalCode.JWT_INVALID,
             message="Error when trying to decode jwt",
         ).build_http_response(status=HTTPStatus.UNAUTHORIZED)
-        return response
-
-    except OnboardingStepsStatusCodeNotOk as ex:
-        Gladsheim.info(error=ex, message=ex.msg)
-        response = ResponseModel(
-            success=False,
-            code=InternalCode.ONBOARDING_STEP_REQUEST_FAILURE,
-            message=msg_error,
-        ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
-        return response
-
-    except InvalidOnboardingCurrentStep as ex:
-        Gladsheim.info(error=ex, message=ex.msg)
-        response = ResponseModel(
-            success=False,
-            code=InternalCode.ONBOARDING_STEP_INCORRECT,
-            message="User is not in correct step",
-        ).build_http_response(status=HTTPStatus.BAD_REQUEST)
         return response
 
     except ErrorOnGetUniqueId as ex:

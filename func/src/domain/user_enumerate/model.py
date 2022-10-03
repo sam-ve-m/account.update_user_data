@@ -68,11 +68,11 @@ class UserEnumerateDataModel:
     async def get_nationalities(self) -> Optional[list]:
         nationalities = []
         personal_nationality = self.get_value("personal.nationality.value")
-        current_marital_status = self.get_value("marital.spouse.value")
+        current_marital_status = self.get_value("marital.spouse")
         if personal_nationality:
             nationalities.append(personal_nationality)
         if current_marital_status:
-            spouse_nationality = current_marital_status["nationality"]
+            spouse_nationality = current_marital_status["nationality"]["value"]
             nationalities.append(spouse_nationality)
         return nationalities
 

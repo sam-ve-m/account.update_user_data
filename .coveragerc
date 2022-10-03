@@ -1,16 +1,8 @@
 [run]
 omit =
-    */main.py
     func/src/domain/enums/*
     func/src/domain/exceptions/*
     func/src/domain/response/*
-    func/src/domain/response/*
     func/src/infrastructures/*
-    func/src/repositories/*
-    func/src/services/builders/*
-    func/src/domain/user_review/validator.py
     tests/*
     */__init__.py
-
-# command to run
-# pytest -v

@@ -122,6 +122,14 @@ class UpdateCustomerRegistrationBuilder:
             )
         return self
 
+    def personal_us_person(self):
+        old_us_person = self.__old_personal_data.get("us_person")
+        if new_us_person := self._get_new_value("personal", "us_person"):
+            self._update_modified_data(
+                levels=("us_person",), old_field=old_us_person, new_filed=new_us_person
+            )
+        return self
+
     def personal_father_name(self):
         old_father_name = self.__old_personal_data.get("father_name")
         if new_father_name := self._get_new_value("personal", "father_name"):
@@ -680,6 +688,7 @@ class UpdateCustomerRegistrationBuilder:
             .personal_tax_residences()
             .personal_email()
             .personal_gender()
+            .personal_us_person()
             .personal_father_name()
             .personal_mother_name()
             .personal_birth_date()

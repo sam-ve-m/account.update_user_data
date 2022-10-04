@@ -34,6 +34,10 @@ class AddressNumberSource(Source):
     value: str
 
 
+class UsPersonSource(Source):
+    value: bool
+
+
 class BirthDateSource(Source):
     value: int
 
@@ -340,6 +344,7 @@ class UserPersonalDataUpdate(BaseModel):
     patrimony: Optional[PatrimonySource]
     income: Optional[IncomeSource]
     foreign_account_tax: Optional[TaxResidenceSource]
+    us_person: Optional[UsPersonSource]
     birth_place_country: Optional[CountrySource]
     birth_place_state: Optional[StateSource]
     birth_place_city: Optional[CountySource]

@@ -37,7 +37,8 @@ user_data_dummy = {
 
 @pytest.mark.asyncio
 async def test_get_activity():
-    model = UserEnumerateDataModel(UserUpdateData(**user_data_dummy))
+    user_data = deepcopy(user_data_dummy)
+    model = UserEnumerateDataModel(UserUpdateData(**user_data))
     result = await model.get_activity()
     expected_result = 101
     assert result == expected_result

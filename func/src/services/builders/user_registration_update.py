@@ -295,7 +295,7 @@ class UpdateCustomerRegistrationBuilder:
     def marital_nationality(self):
         spouse = self.__old_personal_data.get("marital", {}).get("spouse", {})
         old_marital_nationality = None
-        if old_marital_nationality:
+        if spouse:
             old_marital_nationality = spouse.get("nationality")
         if new_marital_spouse := self._get_new_value("marital", "spouse"):
             new_marital_nationality = new_marital_spouse.get("nationality", {}).get(
@@ -311,7 +311,7 @@ class UpdateCustomerRegistrationBuilder:
     def marital_spouse_name(self):
         spouse = self.__old_personal_data.get("marital", {}).get("spouse", {})
         old_spouse_name = None
-        if old_spouse_name:
+        if spouse:
             old_spouse_name = spouse.get("name")
         if new_marital_spouse := self._get_new_value("marital", "spouse"):
             new_marital_spouse_name = new_marital_spouse.get("name", {}).get("value")

@@ -36,28 +36,28 @@ class InternalServerError(Exception):
 
 
 class InvalidActivity(Exception):
-    pass
+    msg = "Jormungandr-Onboarding::validators::Invalid param: invalid activity"
 
 
 class HighRiskActivityNotAllowed(Exception):
-    pass
+    msg = "Jormungandr-Onboarding::validators::Invalid param: suitability"
 
 
 class InvalidState(Exception):
-    pass
+    msg = "Jormungandr-Onboarding::validators::Invalid param: invalid state"
 
 
 class InvalidCity(Exception):
-    pass
+    msg = "Jormungandr-Onboarding::validators::Invalid param: invalid city"
 
 
 class InvalidNationality(Exception):
-    pass
+    msg = "Jormungandr-Onboarding::validators::Invalid param: invalid nationality"
 
 
 class InvalidMaritalStatus(Exception):
-    pass
+    msg = "Jormungandr-Onboarding::validators::Invalid param: invalid marital status"
 
 
 class InvalidCountryAcronym(Exception):
-    pass
+    msg = "Jormungandr-Onboarding::validators::Invalid param: invalid country acronym"

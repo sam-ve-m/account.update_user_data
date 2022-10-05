@@ -1,8 +1,0 @@
-[run]
-omit =
-    func/src/domain/enums/*
-    func/src/domain/exceptions/*
-    func/src/domain/response/*
-    func/src/infrastructures/*
-    tests/*
-    */__init__.py

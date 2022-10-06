@@ -51,7 +51,7 @@ class BirthDateSource(Source):
 
 
 class CelPhoneSource(Source):
-    value: constr(regex=r"^\+\d+", min_length=13, max_length=14)
+    value: constr(regex=r"^\+\d+", min_length=14, max_length=14)
 
 
 class CompanyNameSource(Source):

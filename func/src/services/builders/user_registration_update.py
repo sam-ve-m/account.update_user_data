@@ -531,11 +531,7 @@ class UpdateCustomerRegistrationBuilder:
             "external_exchange_account_us", "is_politically_exposed"
         ):
             self._update_modified_data(
-                levels=(
-                    "external_exchange_requirements",
-                    "us",
-                    "is_politically_exposed",
-                ),
+                levels=("external_exchange_requirements", "us", "is_politically_exposed"),
                 old_field=old_is_politically_exposed,
                 new_filed=new_is_politically_exposed,
             )
@@ -587,6 +583,9 @@ class UpdateCustomerRegistrationBuilder:
                 old_field=old_is_company_director,
                 new_filed=new_is_company_director,
             )
+        return self
+
+    def external_exchange_account_is_company_director_of(self):
         old_is_company_director_of = (
             self.__old_personal_data.get("external_exchange_requirements", {})
             .get("us", {})
@@ -596,11 +595,7 @@ class UpdateCustomerRegistrationBuilder:
             "external_exchange_account_us", "is_company_director_of"
         ):
             self._update_modified_data(
-                levels=(
-                    "external_exchange_requirements",
-                    "us",
-                    "is_company_director_of",
-                ),
+                levels=("external_exchange_requirements", "us", "is_company_director_of"),
                 old_field=old_is_company_director_of,
                 new_filed=new_is_company_director_of,
             )
@@ -616,11 +611,7 @@ class UpdateCustomerRegistrationBuilder:
             "external_exchange_account_us", "user_employ_company_name"
         ):
             self._update_modified_data(
-                levels=(
-                    "external_exchange_requirements",
-                    "us",
-                    "user_employ_company_name",
-                ),
+                levels=("external_exchange_requirements", "us", "user_employ_company_name"),
                 old_field=old_time_experience,
                 new_filed=new_time_experience,
             )
@@ -718,6 +709,7 @@ class UpdateCustomerRegistrationBuilder:
             .external_exchange_account_exchange_member_us()
             .external_exchange_account_time_experience_us()
             .external_exchange_account_company_director_us()
+            .external_exchange_account_is_company_director_of()
             .external_exchange_account_user_employ_company_name_us()
             .external_exchange_account_user_employ_position_us()
             .external_exchange_account_user_employ_type_us()

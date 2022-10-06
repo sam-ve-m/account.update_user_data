@@ -11,6 +11,7 @@ register_dummy = {
         "birth_date": {"source": "app", "value": 158986800},
         "gender": {"source": "app", "value": "F"},
         "father_name": {"source": "app", "value": "Foi Eu"},
+        "company_cnpj": {"source": "app", "value": "02916265000160"},
         "mother_name": {"source": "app", "value": "Rosa Mae"},
         "email": {"source": "app", "value": "brabo04@abraaoz.tk"},
         "phone": {"source": "app", "value": "+5577998636716"},
@@ -45,20 +46,17 @@ register_dummy = {
 }
 
 
-@pytest.mark.asyncio
-async def test_validator_when_is_all_ok():
+def test_validator_when_is_all_ok():
     data_validated = UserUpdateData(**register_dummy)
 
 
-@pytest.mark.asyncio
-async def test_validator_when_occupation_is_high_risk():
+def test_validator_when_occupation_is_high_risk():
     register_stub = register_dummy.copy()
     register_stub["personal"]["occupation_activity"]["value"] = 1
     with pytest.raises(HighRiskActivityNotAllowed):
         data_validated = UserUpdateData(**register_dummy)
 
 
-@pytest.mark.asyncio
 def test_invalid_cpf_last_digit():
     with pytest.raises(ValueError) as error:
         CpfSource.cpf_calculation("44820841821")

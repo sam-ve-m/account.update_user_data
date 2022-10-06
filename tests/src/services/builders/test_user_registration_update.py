@@ -282,6 +282,51 @@ def test_update_assets_update_date():
     fake_instance._update_modified_data.assert_called_once()
 
 
+def test_external_exchange_account_politically_exposed_us_empty():
+    UpdateCustomerRegistrationBuilder.external_exchange_account_politically_exposed_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_once()
+
+
+def test_external_exchange_account_exchange_member_us_empty():
+    UpdateCustomerRegistrationBuilder.external_exchange_account_exchange_member_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_once()
+
+
+def test_external_exchange_account_time_experience_us_empty():
+    UpdateCustomerRegistrationBuilder.external_exchange_account_time_experience_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_once()
+
+
+def test_external_exchange_account_company_director_us_empty():
+    UpdateCustomerRegistrationBuilder.external_exchange_account_company_director_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_once()
+
+
+def test_external_exchange_account_is_company_director_of_empty():
+    UpdateCustomerRegistrationBuilder.external_exchange_account_is_company_director_of(fake_instance)
+    fake_instance._update_modified_data.assert_called_once()
+
+
+def test_external_exchange_account_user_employ_company_name_us_empty():
+    UpdateCustomerRegistrationBuilder.external_exchange_account_user_employ_company_name_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_once()
+
+
+def test_external_exchange_account_user_employ_position_us_empty():
+    UpdateCustomerRegistrationBuilder.external_exchange_account_user_employ_position_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_once()
+
+
+def test_external_exchange_account_user_employ_type_us_empty():
+    UpdateCustomerRegistrationBuilder.external_exchange_account_user_employ_type_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_once()
+
+
+def test_external_exchange_account_user_employ_status_us_empty():
+    UpdateCustomerRegistrationBuilder.external_exchange_account_user_employ_status_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_once()
+
+
 def test_personal_name():
     fake_instance._get_new_value.return_value = MagicMock()
     UpdateCustomerRegistrationBuilder.personal_name(fake_instance)
@@ -662,6 +707,96 @@ def test_address_complement():
     )
 
 
+def test_external_exchange_account_politically_exposed_us():
+    fake_instance._get_new_value.return_value = MagicMock()
+    UpdateCustomerRegistrationBuilder.external_exchange_account_politically_exposed_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_with(
+        levels=("external_exchange_requirements", "us", "is_politically_exposed"),
+        old_field=fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value.get.return_value,
+        new_filed=fake_instance._get_new_value.return_value,
+    )
+
+
+def test_external_exchange_account_exchange_member_us():
+    fake_instance._get_new_value.return_value = MagicMock()
+    UpdateCustomerRegistrationBuilder.external_exchange_account_exchange_member_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_with(
+        levels=("external_exchange_requirements", "us", "is_exchange_member"),
+        old_field=fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value.get.return_value,
+        new_filed=fake_instance._get_new_value.return_value,
+    )
+
+
+def test_external_exchange_account_time_experience_us():
+    fake_instance._get_new_value.return_value = MagicMock()
+    UpdateCustomerRegistrationBuilder.external_exchange_account_time_experience_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_with(
+        levels=("external_exchange_requirements", "us", "time_experience"),
+        old_field=fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value.get.return_value,
+        new_filed=fake_instance._get_new_value.return_value,
+    )
+
+
+def test_external_exchange_account_company_director_us():
+    fake_instance._get_new_value.return_value = MagicMock()
+    UpdateCustomerRegistrationBuilder.external_exchange_account_company_director_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_with(
+        levels=("external_exchange_requirements", "us", "is_company_director"),
+        old_field=fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value.get.return_value,
+        new_filed=fake_instance._get_new_value.return_value,
+    )
+
+
+def test_external_exchange_account_is_company_director_of():
+    fake_instance._get_new_value.return_value = MagicMock()
+    UpdateCustomerRegistrationBuilder.external_exchange_account_is_company_director_of(fake_instance)
+    fake_instance._update_modified_data.assert_called_with(
+        levels=("external_exchange_requirements", "us", "is_company_director_of"),
+        old_field=fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value.get.return_value,
+        new_filed=fake_instance._get_new_value.return_value,
+    )
+
+
+def test_external_exchange_account_user_employ_company_name_us():
+    fake_instance._get_new_value.return_value = MagicMock()
+    UpdateCustomerRegistrationBuilder.external_exchange_account_user_employ_company_name_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_with(
+        levels=("external_exchange_requirements", "us", "user_employ_company_name"),
+        old_field=fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value.get.return_value,
+        new_filed=fake_instance._get_new_value.return_value,
+    )
+
+
+def test_external_exchange_account_user_employ_position_us():
+    fake_instance._get_new_value.return_value = MagicMock()
+    UpdateCustomerRegistrationBuilder.external_exchange_account_user_employ_position_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_with(
+        levels=("external_exchange_requirements", "us", "user_employ_position"),
+        old_field=fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value.get.return_value,
+        new_filed=fake_instance._get_new_value.return_value,
+    )
+
+
+def test_external_exchange_account_user_employ_type_us():
+    fake_instance._get_new_value.return_value = MagicMock()
+    UpdateCustomerRegistrationBuilder.external_exchange_account_user_employ_type_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_with(
+        levels=("external_exchange_requirements", "us", "user_employ_type"),
+        old_field=fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value.get.return_value,
+        new_filed=fake_instance._get_new_value.return_value,
+    )
+
+
+def test_external_exchange_account_user_employ_status_us():
+    fake_instance._get_new_value.return_value = MagicMock()
+    UpdateCustomerRegistrationBuilder.external_exchange_account_user_employ_status_us(fake_instance)
+    fake_instance._update_modified_data.assert_called_with(
+        levels=("external_exchange_requirements", "us", "user_employ_status"),
+        old_field=fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value.get.return_value,
+        new_filed=fake_instance._get_new_value.return_value,
+    )
+
+
 def test_marital_cpf_empty_spouse():
     fake_instance._get_new_value.return_value = MagicMock()
     fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value = False
@@ -693,3 +828,4 @@ def test_marital_spouse_name_empty_spouse():
         old_field=None,
         new_filed=fake_instance._get_new_value.return_value.get.return_value.get.return_value,
     )
+

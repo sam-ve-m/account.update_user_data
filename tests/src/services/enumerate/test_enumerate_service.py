@@ -35,6 +35,21 @@ async def test_when_combination_place_is_valid_then_return_none(
 @pytest.mark.asyncio
 @patch(
     "func.src.services.user_enumerate_data.EnumerateRepository.get_city",
+    return_value=1,
+)
+async def test_when_combination_place_is_valid_none(
+    mock_validate_city, enumerate_service_missing_some_data
+):
+    result = await enumerate_service_missing_some_data._validate_combination_place(
+        combination_place=None
+    )
+    mock_validate_city.assert_not_called()
+    assert result is None
+
+
+@pytest.mark.asyncio
+@patch(
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_city",
     return_value=None,
 )
 async def test_when_combination_place_is_invalid_then_raises(

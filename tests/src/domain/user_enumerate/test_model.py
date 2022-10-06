@@ -20,7 +20,7 @@ user_data_dummy = {
         "spouse": {
             "nationality": {"source": "app", "value": 2},
             "cpf": {"source": "app", "value": "88663481047"},
-            "name": {"source": "app", "value": "fulana"},
+            "name": {"source": "app", "value": "fulana de tal"},
 
         }
         },

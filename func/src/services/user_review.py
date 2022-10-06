@@ -10,6 +10,7 @@ from ..services.builders.user_registration_update import (
     UpdateCustomerRegistrationBuilder,
 )
 from ..transports.audit.transport import Audit
+from ..transports.iara.transport import IaraTransport
 
 
 class UserReviewDataService:
@@ -34,10 +35,13 @@ class UserReviewDataService:
         )
         await Audit.record_message_log(user_review_model=user_review_model)
         new_user_template = await user_review_model.get_new_user_data()
+
         await UserReviewDataService._update_user(
             unique_id=unique_id,
             new_user_registration_data=new_user_template,
         )
+        await IaraTransport.send_to_sinacor_update_queue(user_review_model)
+        await IaraTransport.send_to_drive_wealth_update_queue(user_review_model)
 
     @staticmethod
     async def _get_user_data(unique_id: str) -> dict:

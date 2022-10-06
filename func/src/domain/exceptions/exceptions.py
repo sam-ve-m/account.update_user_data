@@ -12,6 +12,10 @@ class ErrorOnSendAuditLog(Exception):
     )
 
 
+class ErrorOnSendIaraMessage(Exception):
+    msg = "Jormungandr-Onboarding::send_to_sinacor_registration_queue::Error when trying send message to Iara"
+
+
 class ErrorOnUpdateUser(Exception):
     msg = (
         "Jormungandr-Onboarding::update_user_with_complementary_data::Error on trying to update user in mongo_db::"

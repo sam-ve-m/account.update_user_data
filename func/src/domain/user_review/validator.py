@@ -41,7 +41,7 @@ class UsPersonSource(Source):
 class BirthDateSource(Source):
     value: int
 
-    @validator("value", always=True, allow_reuse=True)
+    @validator("value")
     def validate_value(cls, value):
         try:
             date = datetime.fromtimestamp(value, tz=timezone.utc)
@@ -61,17 +61,17 @@ class CompanyNameSource(Source):
 class CnpjSource(Source):
     value: str
 
-    @validator("value", always=True, allow_reuse=True)
+    @validator("value")
     def format_cnpj(cls, cnpj):
         return list(re.sub(r"[^0-9]", "", cnpj))
 
-    @validator("value", always=True, allow_reuse=True)
+    @validator("value")
     def cnpj_is_not_a_sequence(cls, cnpj):
         if cnpj == cnpj[::-1]:
             raise ValueError("Invalid CNPJ")
         return cnpj
 
-    @validator("value", always=True, allow_reuse=True)
+    @validator("value")
     def cnpj_calculation(cls, new_cnpj):
         first_digit_calculation_array = [
             "5",
@@ -142,39 +142,38 @@ class CnpjSource(Source):
 class CpfSource(Source):
     value: str
 
-    @validator("value", always=True, allow_reuse=True)
+    @validator("value")
     def format_cpf(cls, cpf: str):
         cpf = re.sub("[^0-9]", "", cpf)
         return cpf
 
-    @validator("value", always=True, allow_reuse=True)
+    @validator("value")
     def cpf_is_not_a_sequence(cls, cpf):
         if cpf == cpf[::-1]:
             raise ValueError("Invalid CPF")
         return cpf
 
-    @validator("value", always=True, allow_reuse=True)
+    @validator("value")
     def cpf_calculation(cls, cpf: str):
-        cpf_last_digits = cpf[:-2]
-        cont_reversed = 10
-        total = 0
+        if len(cpf) != 11:
+            raise ValueError("Invalid cpf")
 
-        for index in range(19):
-            if index > 8:
-                index -= 9
-            total += int(cpf_last_digits[index]) * cont_reversed
-            cont_reversed -= 1
+        first_digit_validation = sum(
+            int(cpf[index]) * (10 - index) for index in range(9)
+        )
+        mod_first_digit = first_digit_validation % 11
+        first_digit = 11 - mod_first_digit if mod_first_digit > 1 else 0
+        if str(first_digit) != cpf[-2]:
+            raise ValueError("Invalid cpf")
 
-            if cont_reversed < 2:
-                cont_reversed = 11
-                digits = 11 - (total % 11)
+        second_digit_validation = (
+            first_digit_validation + sum(map(int, cpf[:9])) + 2 * first_digit
+        )
+        mod_second_digit = second_digit_validation % 11
+        second_digit = 11 - mod_second_digit if mod_second_digit > 1 else 0
+        if str(second_digit) != cpf[-1]:
+            raise ValueError(f"Invalid cpf")
 
-                if digits > 9:
-                    digits = 0
-                total = 0
-                cpf_last_digits += str(digits)
-        if not cpf == cpf_last_digits:
-            raise ValueError("Invalid CPF")
         return cpf
 
 
@@ -189,7 +188,7 @@ class CountySource(Source):
 class DateSource(Source):
     value: int
 
-    @validator("value", always=True, allow_reuse=True)
+    @validator("value")
     def validate_value(cls, value):
         try:
             date = datetime.fromtimestamp(value)
@@ -201,7 +200,7 @@ class DateSource(Source):
 class DocumentNumberSource(Source):
     value: str
 
-    @validator("value", always=True, allow_reuse=True)
+    @validator("value")
     def validate_value(cls, value):
         return value.replace(".", "").replace("-", "").replace("/", "")
 
@@ -213,7 +212,7 @@ class DocumentTypesSource(Source):
 class EmailSource(Source):
     value: str
 
-    @validator("value", always=True, allow_reuse=True)
+    @validator("value")
     def validate_email(cls, email: str):
         regex = r"^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{2,66})\.([a-z]{2,3}(?:\.[a-z]{2})?)$"
         if not re.search(regex, email):
@@ -395,13 +394,11 @@ class ExternalExchangeAccountUsUpdate(BaseModel):
     @root_validator()
     def validate(cls, values: Dict[str, Any]):
         is_company_director = values.get("is_company_director", {}).get("value")
-        company_name_meta = values.get("is_company_director_of", {})
-        if is_company_director and not company_name_meta:
-            company_name = company_name_meta.get("value")
-            if not company_name:
-                raise ValueError(
-                    "Need to inform the field company_director_of if you are a company director"
-                )
+        company_name = values.get("is_company_director_of").get("value")
+        if is_company_director and not company_name:
+            raise ValueError(
+                "Need to inform the field company_director_of if you are a company director"
+            )
         return values
 
 

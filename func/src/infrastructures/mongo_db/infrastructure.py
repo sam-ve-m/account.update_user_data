@@ -1,5 +1,5 @@
 from decouple import config
-from motor.motor_asyncio import AsyncIOMotorClient
+from motor import motor_asyncio
 
 
 class MongoDBInfrastructure:
@@ -11,7 +11,7 @@ class MongoDBInfrastructure:
         if cls.client is None:
             try:
                 url = config("MONGO_CONNECTION_URL")
-                cls.client = AsyncIOMotorClient(url)
+                cls.client = motor_asyncio.AsyncIOMotorClient(url)
             except Exception as ex:
                 raise ex
         return cls.client

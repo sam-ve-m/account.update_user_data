@@ -1,5 +1,5 @@
 from copy import deepcopy
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import pytest
 
@@ -37,7 +37,8 @@ user_data_dummy = {
 
 @pytest.mark.asyncio
 async def test_get_activity():
-    model = UserEnumerateDataModel(UserUpdateData(**user_data_dummy))
+    user_data = deepcopy(user_data_dummy)
+    model = UserEnumerateDataModel(UserUpdateData(**user_data))
     result = await model.get_activity()
     expected_result = 101
     assert result == expected_result
@@ -78,6 +79,43 @@ async def test_get_combination_address():
     result = await model.get_combination_address()
     expected_result = {'country': 'BRA', 'state': 'SP', 'city': 5051}
     assert result == expected_result
+
+
+fake_instance = MagicMock()
+
+
+@pytest.mark.asyncio
+async def test_get_combination_birth_place_without_birth_place():
+    fake_instance.user_review_data.get.return_value = None
+    result = await UserEnumerateDataModel.get_combination_birth_place(fake_instance)
+    fake_instance.get_value.assert_not_called()
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_get_combination_address_without_address():
+    fake_instance.user_review_data.get.return_value = None
+    result = await UserEnumerateDataModel.get_combination_address(fake_instance)
+    fake_instance.get_value.assert_not_called()
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_get_combination_birth_place_without_combination():
+    fake_instance.user_review_data.get.return_value = True
+    fake_instance.get_value.return_value = None
+    result = await UserEnumerateDataModel.get_combination_birth_place(fake_instance)
+    fake_instance.get_value.assert_called()
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_get_combination_address_without_combination():
+    fake_instance.user_review_data.get.return_value = True
+    fake_instance.get_value.return_value = None
+    result = await UserEnumerateDataModel.get_combination_address(fake_instance)
+    fake_instance.get_value.assert_called()
+    assert result is None
 
 
 @pytest.mark.asyncio

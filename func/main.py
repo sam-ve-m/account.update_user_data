@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from etria_logger import Gladsheim
-from flask import request, Response, Request
+import flask
 
 from src.domain.enums.code import InternalCode
 from src.domain.exceptions.exceptions import (
@@ -26,11 +26,11 @@ from src.services.user_enumerate_data import UserEnumerateService
 from src.services.user_review import UserReviewDataService
 
 
-async def update_user_data(request: Request = request) -> Response:
+async def update_user_data() -> flask.Response:
     msg_error = "Unexpected error occurred"
-    jwt = request.headers.get("x-thebes-answer")
+    jwt = flask.request.headers.get("x-thebes-answer")
     try:
-        raw_payload = request.json
+        raw_payload = flask.request.json
         payload_validated = UserUpdateData(**raw_payload)
         unique_id = await JwtService.decode_jwt_and_get_unique_id(jwt=jwt)
         await UserEnumerateService(
@@ -47,7 +47,7 @@ async def update_user_data(request: Request = request) -> Response:
         return response
 
     except ErrorOnDecodeJwt as ex:
-        Gladsheim.info(error=ex, message=ex.msg)
+        Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
             success=False,
             code=InternalCode.JWT_INVALID,
@@ -56,7 +56,7 @@ async def update_user_data(request: Request = request) -> Response:
         return response
 
     except ErrorOnGetUniqueId as ex:
-        Gladsheim.info(error=ex, message=ex.msg)
+        Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
             success=False,
             code=InternalCode.JWT_INVALID,
@@ -65,9 +65,9 @@ async def update_user_data(request: Request = request) -> Response:
         return response
 
     except UserUniqueIdNotExists as ex:
-        Gladsheim.info(error=ex, message=ex.msg)
+        Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
-            success=True,
+            success=False,
             code=InternalCode.DATA_NOT_FOUND,
             message="There is no user with this unique_id",
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)
@@ -82,14 +82,14 @@ async def update_user_data(request: Request = request) -> Response:
         InvalidMaritalStatus,
         InvalidCountryAcronym,
     ) as ex:
-        Gladsheim.info(error=ex)
+        Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
             success=False, code=InternalCode.INVALID_PARAMS, message="Invalid params"
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)
         return response
 
     except HighRiskActivityNotAllowed as ex:
-        Gladsheim.info(error=ex)
+        Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
             success=False,
             code=InternalCode.INVALID_PARAMS,
@@ -98,28 +98,28 @@ async def update_user_data(request: Request = request) -> Response:
         return response
 
     except ErrorOnSendAuditLog as ex:
-        Gladsheim.info(error=ex, message=ex.msg)
+        Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
             success=False, code=InternalCode.INTERNAL_SERVER_ERROR, message=msg_error
         ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
         return response
 
     except ErrorOnUpdateUser as ex:
-        Gladsheim.info(error=ex, message=ex.msg)
+        Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
             success=False, code=InternalCode.INTERNAL_SERVER_ERROR, message=msg_error
         ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
         return response
 
     except ValueError as ex:
-        Gladsheim.info(error=ex)
+        Gladsheim.error(error=ex, message=str(ex))
         response = ResponseModel(
             success=False, code=InternalCode.INVALID_PARAMS, message="Invalid params"
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)
         return response
 
     except Exception as ex:
-        Gladsheim.error(error=ex)
+        Gladsheim.error(error=ex, message=str(ex))
         response = ResponseModel(
             success=False, code=InternalCode.INTERNAL_SERVER_ERROR, message=msg_error
         ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)

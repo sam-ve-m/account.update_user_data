@@ -13,7 +13,10 @@ user_data_dummy = {
         "birth_place_country": {"source": "app", "value": "BRA"},
         "birth_place_state": {"source": "app", "value": "PA"},
         "birth_place_city": {"source": "app", "value": 2412},
-        "foreign_account_tax": {"source": "app", "value": [{"country": "USA", "tax_number": "132"}]},
+        "foreign_account_tax": {
+            "source": "app",
+            "value": [{"country": "USA", "tax_number": "132"}],
+        },
     },
     "marital": {
         "status": {"source": "app", "value": 1},
@@ -21,9 +24,8 @@ user_data_dummy = {
             "nationality": {"source": "app", "value": 2},
             "cpf": {"source": "app", "value": "88663481047"},
             "name": {"source": "app", "value": "fulana de tal"},
-
-        }
         },
+    },
     "documents": {
         "state": {"source": "app", "value": "SP"},
     },
@@ -49,7 +51,7 @@ async def test_get_combination_birth_place():
     user_data = deepcopy(user_data_dummy)
     model = UserEnumerateDataModel(UserUpdateData(**user_data))
     result = await model.get_combination_birth_place()
-    expected_result = {'country': 'BRA', 'state': 'PA', 'city': 2412}
+    expected_result = {"country": "BRA", "state": "PA", "city": 2412}
     assert result == expected_result
 
 
@@ -77,7 +79,7 @@ async def test_get_combination_address():
     user_data = deepcopy(user_data_dummy)
     model = UserEnumerateDataModel(UserUpdateData(**user_data))
     result = await model.get_combination_address()
-    expected_result = {'country': 'BRA', 'state': 'SP', 'city': 5051}
+    expected_result = {"country": "BRA", "state": "SP", "city": 5051}
     assert result == expected_result
 
 

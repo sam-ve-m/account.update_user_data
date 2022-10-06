@@ -26,11 +26,11 @@ from src.services.user_enumerate_data import UserEnumerateService
 from src.services.user_review import UserReviewDataService
 
 
-async def update_user_data(request=flask.request) -> flask.Response:
+async def update_user_data() -> flask.Response:
     msg_error = "Unexpected error occurred"
-    jwt = request.headers.get("x-thebes-answer")
+    jwt = flask.request.headers.get("x-thebes-answer")
     try:
-        raw_payload = request.json
+        raw_payload = flask.request.json
         payload_validated = UserUpdateData(**raw_payload)
         unique_id = await JwtService.decode_jwt_and_get_unique_id(jwt=jwt)
         await UserEnumerateService(

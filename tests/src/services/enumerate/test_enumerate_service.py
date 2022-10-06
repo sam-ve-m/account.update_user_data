@@ -24,10 +24,10 @@ async def test_when_combination_place_is_valid_then_return_none(
 ):
     result = await enumerate_service_missing_some_data._validate_combination_place(
         combination_place={
-                "country": "value",
-                "state": "value",
-                "city": "value",
-            }
+            "country": "value",
+            "state": "value",
+            "city": "value",
+        }
     )
     assert result is None
 

@@ -32,4 +32,3 @@ class IaraTransport:
             Gladsheim.error(
                 message=f"Failed to send user to queue of DriveWealth account update"
             )
-

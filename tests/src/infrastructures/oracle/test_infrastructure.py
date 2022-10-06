@@ -11,7 +11,9 @@ dummy_connection = "dummy connection"
 
 
 @pytest.mark.asyncio
-@patch.object(cx_Oracle_async, "create_pool", side_effect=AsyncMock(return_value=dummy_connection))
+@patch.object(
+    cx_Oracle_async, "create_pool", side_effect=AsyncMock(return_value=dummy_connection)
+)
 @patch.object(AutoConfig, "__call__", return_value=dummy_env)
 async def test_get_pool(mocked_env, mock_connection):
     new_connection_created = await OracleInfrastructure._get_pool()
@@ -48,5 +50,3 @@ async def test_get_pool(mocked_env, mock_connection):
     )
     mocked_env.assert_called()
     OracleInfrastructure.client = None
-
-

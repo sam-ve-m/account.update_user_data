@@ -1,8 +1,16 @@
 import pytest
 
-from func.src.domain.exceptions.exceptions import HighRiskActivityNotAllowed, InvalidEmail
-from func.src.domain.user_review.validator import UserUpdateData, CnpjSource, EmailSource, CpfSource, \
-    ExternalExchangeAccountUsUpdate
+from func.src.domain.exceptions.exceptions import (
+    HighRiskActivityNotAllowed,
+    InvalidEmail,
+)
+from func.src.domain.user_review.validator import (
+    UserUpdateData,
+    CnpjSource,
+    EmailSource,
+    CpfSource,
+    ExternalExchangeAccountUsUpdate,
+)
 
 register_dummy = {
     "personal": {
@@ -100,27 +108,35 @@ def test_invalid_email():
 
 def test_company_director_without_company_name():
     with pytest.raises(ValueError):
-        ExternalExchangeAccountUsUpdate.validate({
-            "is_company_director": {"value": True},
-            "is_company_director_of": {"value": False}
-        })
+        ExternalExchangeAccountUsUpdate.validate(
+            {
+                "is_company_director": {"value": True},
+                "is_company_director_of": {"value": False},
+            }
+        )
 
 
 def test_company_director():
-    ExternalExchangeAccountUsUpdate.validate({
-        "is_company_director": {"value": True},
-        "is_company_director_of": {"value": True}
-    })
+    ExternalExchangeAccountUsUpdate.validate(
+        {
+            "is_company_director": {"value": True},
+            "is_company_director_of": {"value": True},
+        }
+    )
 
 
 def test_root_validator():
-    UserUpdateData.validate({
-        "is_company_director": True,
-    })
+    UserUpdateData.validate(
+        {
+            "is_company_director": True,
+        }
+    )
 
 
 def test_root_validator_invalid_value():
     with pytest.raises(ValueError):
-        UserUpdateData.validate({
-            "is_company_director_of": None,
-        })
+        UserUpdateData.validate(
+            {
+                "is_company_director_of": None,
+            }
+        )

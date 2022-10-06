@@ -531,7 +531,11 @@ class UpdateCustomerRegistrationBuilder:
             "external_exchange_account_us", "is_politically_exposed"
         ):
             self._update_modified_data(
-                levels=("external_exchange_requirements", "us", "is_politically_exposed"),
+                levels=(
+                    "external_exchange_requirements",
+                    "us",
+                    "is_politically_exposed",
+                ),
                 old_field=old_is_politically_exposed,
                 new_filed=new_is_politically_exposed,
             )
@@ -595,7 +599,11 @@ class UpdateCustomerRegistrationBuilder:
             "external_exchange_account_us", "is_company_director_of"
         ):
             self._update_modified_data(
-                levels=("external_exchange_requirements", "us", "is_company_director_of"),
+                levels=(
+                    "external_exchange_requirements",
+                    "us",
+                    "is_company_director_of",
+                ),
                 old_field=old_is_company_director_of,
                 new_filed=new_is_company_director_of,
             )
@@ -611,7 +619,11 @@ class UpdateCustomerRegistrationBuilder:
             "external_exchange_account_us", "user_employ_company_name"
         ):
             self._update_modified_data(
-                levels=("external_exchange_requirements", "us", "user_employ_company_name"),
+                levels=(
+                    "external_exchange_requirements",
+                    "us",
+                    "user_employ_company_name",
+                ),
                 old_field=old_time_experience,
                 new_filed=new_time_experience,
             )

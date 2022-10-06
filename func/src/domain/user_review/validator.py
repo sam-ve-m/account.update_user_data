@@ -233,8 +233,13 @@ class IssuerSource(Source):
     value: str
 
 
+char_with_space = "[a-zA-Z\sáéíóúãẽĩõũâêîôûÁÉÍÓÚÃẼĨÕŨÂÊÎÔÛç]"
+char_without_space = "[a-zA-ZáéíóúãẽĩõũâêîôûÁÉÍÓÚÃẼĨÕŨÂÊÎÔÛç]"
+name_regex = rf"^{char_without_space}+\s{char_without_space}{char_with_space}*$"
+
+
 class NameSource(Source):
-    value: constr(regex=r"^[a-zA-Z\sáéíóúãẽĩõũâêîôûç]+$", max_length=60)
+    value: constr(regex=name_regex, max_length=60)
 
 
 class NationalitySource(Source):

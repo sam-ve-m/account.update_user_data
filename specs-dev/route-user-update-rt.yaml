@@ -1,0 +1,23 @@
+apiVersion: fission.io/v1
+kind: HTTPTrigger
+metadata:
+  creationTimestamp: null
+  name: user-update-rt
+  namespace: default
+spec:
+  createingress: false
+  functionref:
+    functionweights: null
+    name: user-update-fn
+    type: name
+  host: ""
+  ingressconfig:
+    annotations: null
+    host: '*'
+    path: /account/update_user
+    tls: ""
+  method: ""
+  methods:
+  - PUT
+  prefix: ""
+  relativeurl: /account/update_user

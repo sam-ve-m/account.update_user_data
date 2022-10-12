@@ -1,0 +1,69 @@
+apiVersion: fission.io/v1
+kind: Environment
+metadata:
+  creationTimestamp: null
+  name: user-update-env
+  namespace: default
+spec:
+  builder:
+    command: build
+    container:
+      name: ""
+      resources: {}
+    image: nexus.sigame.com.br/fission-builder-3.8:0.0.1
+  imagepullsecret: "nexus-v3"
+  keeparchive: false
+  resources: {}
+  runtime:
+    image: nexus.sigame.com.br/fission-async-cx:0.0.1
+    podspec:
+      containers:
+        - name: user-update-env
+          env:
+            - name: ROOT_LOG_LEVEL
+              value: "INFO"
+            - name: ETRIA_LOG_LEVEL
+              value: "INFO"
+            - name: ASGI_FRAMEWORK
+              value: "HYPERCORN"
+            - name: PERSEPHONE_USER_REVIEW_SCHEMA
+              value: "user_update_register_data_schema"
+            - name: PERSEPHONE_TOPIC_USER
+              value: "sphinx-persephone.user.crud"
+            - name: PERSEPHONE_KAFKA_BROKERS
+              value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+            - name: MONGO_CONNECTION_URL
+              value: "mongodb://jormungandr:MMhsdanNNds32Malmnwqyrte@172.30.18.223:41000,172.30.19.240:41000,172.30.19.71:41000/?authSource=admin&replicaSet=rslionx&readPreference=secondary&ssl=false"
+            - name: MONGODB_DATABASE_NAME
+              value: "lionx"
+            - name: MONGODB_USER_COLLECTION
+              value: "users"
+            - name: HEIMDALL_FILE_BUCKET_NAME
+              value: "heimdall_rsa"
+            - name: HEIMDALL_AWS_ACCESS_KEY_ID
+              value: "AKIATZVFXI25USQWCS5O"
+            - name: HEIMDALL_AWS_SECRET_ACCESS_KEY
+              value: "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"
+            - name: HEIMDALL_REGION_NAME
+              value: "sa-east-1"
+            - name: HEIMDALL_BUCKET_NAME_KEY
+              value: "auth-gateway-keys-uat"
+            - name: HEIMDALL_JWT_REQUIRED_FIELDS
+              value: "[]"
+            - name: HEIMDALL_REDIS_URL
+              value: "redis://heimdal:FBJAnjkqw21yjewkDSA@172.30.19.183:6379?db=1"
+            - name: ORACLE_BASE_DSN
+              value: "172.30.18.44"
+            - name: ORACLE_USER
+              value: "ujormdb001"
+            - name: ORACLE_PASSWORD
+              value: "YhrewmJDSA76hba"
+            - name: ORACLE_SERVICE
+              value: "OPDBUAT.SUBPRIV.VCNUAT.ORACLEVCN.COM"
+            - name: ORACLE_ENCODING
+              value: "UTF-8"
+            - name: ORACLE_PORT
+              value: "1521"
+            - name: IARA_KAFKA_BROKERS
+              value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+  version: 3

@@ -14,10 +14,10 @@ spec:
   ingressconfig:
     annotations: null
     host: '*'
-    path: /onboarding/update_user
+    path: /account/update_user
     tls: ""
   method: ""
   methods:
   - PUT
   prefix: ""
-  relativeurl: /onboarding/update_user
+  relativeurl: /account/update_user

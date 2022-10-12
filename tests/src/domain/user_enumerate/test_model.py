@@ -1,5 +1,5 @@
 from copy import deepcopy
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import pytest
 
@@ -13,17 +13,19 @@ user_data_dummy = {
         "birth_place_country": {"source": "app", "value": "BRA"},
         "birth_place_state": {"source": "app", "value": "PA"},
         "birth_place_city": {"source": "app", "value": 2412},
-        "foreign_account_tax": {"source": "app", "value": [{"country": "USA", "tax_number": "132"}]},
+        "foreign_account_tax": {
+            "source": "app",
+            "value": [{"country": "USA", "tax_number": "132"}],
+        },
     },
     "marital": {
         "status": {"source": "app", "value": 1},
         "spouse": {
             "nationality": {"source": "app", "value": 2},
             "cpf": {"source": "app", "value": "88663481047"},
-            "name": {"source": "app", "value": "fulana"},
-
-        }
+            "name": {"source": "app", "value": "fulana de tal"},
         },
+    },
     "documents": {
         "state": {"source": "app", "value": "SP"},
     },
@@ -37,7 +39,8 @@ user_data_dummy = {
 
 @pytest.mark.asyncio
 async def test_get_activity():
-    model = UserEnumerateDataModel(UserUpdateData(**user_data_dummy))
+    user_data = deepcopy(user_data_dummy)
+    model = UserEnumerateDataModel(UserUpdateData(**user_data))
     result = await model.get_activity()
     expected_result = 101
     assert result == expected_result
@@ -48,7 +51,7 @@ async def test_get_combination_birth_place():
     user_data = deepcopy(user_data_dummy)
     model = UserEnumerateDataModel(UserUpdateData(**user_data))
     result = await model.get_combination_birth_place()
-    expected_result = {'country': 'BRA', 'state': 'PA', 'city': 2412}
+    expected_result = {"country": "BRA", "state": "PA", "city": 2412}
     assert result == expected_result
 
 
@@ -76,8 +79,45 @@ async def test_get_combination_address():
     user_data = deepcopy(user_data_dummy)
     model = UserEnumerateDataModel(UserUpdateData(**user_data))
     result = await model.get_combination_address()
-    expected_result = {'country': 'BRA', 'state': 'SP', 'city': 5051}
+    expected_result = {"country": "BRA", "state": "SP", "city": 5051}
     assert result == expected_result
+
+
+fake_instance = MagicMock()
+
+
+@pytest.mark.asyncio
+async def test_get_combination_birth_place_without_birth_place():
+    fake_instance.user_review_data.get.return_value = None
+    result = await UserEnumerateDataModel.get_combination_birth_place(fake_instance)
+    fake_instance.get_value.assert_not_called()
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_get_combination_address_without_address():
+    fake_instance.user_review_data.get.return_value = None
+    result = await UserEnumerateDataModel.get_combination_address(fake_instance)
+    fake_instance.get_value.assert_not_called()
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_get_combination_birth_place_without_combination():
+    fake_instance.user_review_data.get.return_value = True
+    fake_instance.get_value.return_value = None
+    result = await UserEnumerateDataModel.get_combination_birth_place(fake_instance)
+    fake_instance.get_value.assert_called()
+    assert result is None
+
+
+@pytest.mark.asyncio
+async def test_get_combination_address_without_combination():
+    fake_instance.user_review_data.get.return_value = True
+    fake_instance.get_value.return_value = None
+    result = await UserEnumerateDataModel.get_combination_address(fake_instance)
+    fake_instance.get_value.assert_called()
+    assert result is None
 
 
 @pytest.mark.asyncio

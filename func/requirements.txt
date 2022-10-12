@@ -6,3 +6,4 @@ heimdall-client==2.3.1
 motor==3.0.0
 persephone-client==1.6.1
 strenum==0.4.8
+iara-client==0.6.0

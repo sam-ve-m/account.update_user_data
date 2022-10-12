@@ -46,7 +46,9 @@ async def test_when_not_found_an_user_then_raises(mock_repository):
     return_value=stub_user_from_database,
 )
 async def test_when_apply_rules_successfully_then_return_true(
-    mock_get_user, mock_audit, mock_update,
+    mock_get_user,
+    mock_audit,
+    mock_update,
 ):
     result = await UserReviewDataService.apply_rules_to_update_user(
         unique_id=stub_unique_id, payload_validated=stub_payload_validated

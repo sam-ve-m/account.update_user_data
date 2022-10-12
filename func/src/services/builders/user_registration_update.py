@@ -295,7 +295,7 @@ class UpdateCustomerRegistrationBuilder:
     def marital_nationality(self):
         spouse = self.__old_personal_data.get("marital", {}).get("spouse", {})
         old_marital_nationality = None
-        if old_marital_nationality:
+        if spouse:
             old_marital_nationality = spouse.get("nationality")
         if new_marital_spouse := self._get_new_value("marital", "spouse"):
             new_marital_nationality = new_marital_spouse.get("nationality", {}).get(
@@ -311,7 +311,7 @@ class UpdateCustomerRegistrationBuilder:
     def marital_spouse_name(self):
         spouse = self.__old_personal_data.get("marital", {}).get("spouse", {})
         old_spouse_name = None
-        if old_spouse_name:
+        if spouse:
             old_spouse_name = spouse.get("name")
         if new_marital_spouse := self._get_new_value("marital", "spouse"):
             new_marital_spouse_name = new_marital_spouse.get("name", {}).get("value")
@@ -587,6 +587,9 @@ class UpdateCustomerRegistrationBuilder:
                 old_field=old_is_company_director,
                 new_filed=new_is_company_director,
             )
+        return self
+
+    def external_exchange_account_is_company_director_of(self):
         old_is_company_director_of = (
             self.__old_personal_data.get("external_exchange_requirements", {})
             .get("us", {})
@@ -718,6 +721,7 @@ class UpdateCustomerRegistrationBuilder:
             .external_exchange_account_exchange_member_us()
             .external_exchange_account_time_experience_us()
             .external_exchange_account_company_director_us()
+            .external_exchange_account_is_company_director_of()
             .external_exchange_account_user_employ_company_name_us()
             .external_exchange_account_user_employ_position_us()
             .external_exchange_account_user_employ_type_us()

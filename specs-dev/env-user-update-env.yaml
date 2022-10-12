@@ -64,4 +64,6 @@ spec:
               value: "UTF-8"
             - name: ORACLE_PORT
               value: "1521"
+            - name: IARA_KAFKA_BROKERS
+              value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
   version: 3

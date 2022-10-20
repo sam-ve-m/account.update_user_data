@@ -1,6 +1,9 @@
+from etria_logger import Gladsheim
+
+from ..domain.enums.user_review import UserOnboardingStep
 from ..domain.exceptions.exceptions import (
     UserUniqueIdNotExists,
-    ErrorOnUpdateUser,
+    ErrorOnUpdateUser, InvalidOnboardingCurrentStep,
 )
 
 from ..domain.user_review.model import UserReviewModel
@@ -11,11 +14,41 @@ from ..services.builders.user_registration_update import (
 )
 from ..transports.audit.transport import Audit
 from ..transports.iara.transport import IaraTransport
+from ..transports.onboarding_steps.transport import OnboardingSteps
 
 
 class UserReviewDataService:
+
     @staticmethod
-    async def apply_rules_to_update_user(
+    async def check_if_able_to_update(payload_validated: UserUpdateData, jwt: str):
+        await UserReviewDataService._check_if_able_to_update_br(jwt)
+        if payload_validated.external_exchange_account_us:
+            await UserReviewDataService._check_if_able_to_update_us(jwt)
+
+    @staticmethod
+    async def _check_if_able_to_update_br(jwt: str):
+        customer_steps = await OnboardingSteps.get_customer_steps_br(jwt=jwt)
+        if customer_steps != UserOnboardingStep.FINISHED:
+            Gladsheim.warning(
+                message=InvalidOnboardingCurrentStep.msg + " in BR",
+                onboarding_step=customer_steps,
+                jwt=jwt
+            )
+            raise InvalidOnboardingCurrentStep()
+
+    @staticmethod
+    async def _check_if_able_to_update_us(jwt: str):
+        customer_steps = await OnboardingSteps.get_customer_steps_us(jwt=jwt)
+        if customer_steps != UserOnboardingStep.FINISHED:
+            Gladsheim.warning(
+                message=InvalidOnboardingCurrentStep.msg + " in US",
+                onboarding_step=customer_steps,
+                jwt=jwt
+            )
+            raise InvalidOnboardingCurrentStep()
+
+    @staticmethod
+    async def update_user_data(
         unique_id: str, payload_validated: UserUpdateData
     ):
         user_data = await UserReviewDataService._get_user_data(unique_id=unique_id)

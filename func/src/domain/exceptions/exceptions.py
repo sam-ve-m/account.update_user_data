@@ -65,3 +65,11 @@ class InvalidMaritalStatus(Exception):
 
 class InvalidCountryAcronym(Exception):
     msg = "Jormungandr-Onboarding::validators::Invalid param: invalid country acronym"
+
+
+class OnboardingStepsStatusCodeNotOk(Exception):
+    msg = "Jormungandr-Onboarding::transports::Bad response: status not Ok returned form onboarding steps"
+
+
+class InvalidOnboardingCurrentStep(Exception):
+    msg = "Jormungandr-Onboarding::validators::Ivalid Step: Invalid user step, it must have be finishd"

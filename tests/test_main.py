@@ -7,13 +7,13 @@ import flask
 import pytest
 from decouple import RepositoryEnv, Config
 
-from src.domain.user_review.validator import UserUpdateData
-from src.services.user_enumerate_data import UserEnumerateService
 
 with patch.object(RepositoryEnv, "__init__", return_value=None):
     with patch.object(Config, "__init__", return_value=None):
         with patch.object(Config, "__call__"):
             with patch.object(logging.config, "dictConfig"):
+                from src.domain.user_review.validator import UserUpdateData
+                from src.services.user_enumerate_data import UserEnumerateService
                 from etria_logger import Gladsheim
                 from main import update_user_data
                 from src.services.jwt import JwtService
@@ -152,6 +152,7 @@ dummy_response = "response"
 @patch.object(UserEnumerateService, "__init__", return_value=None)
 @patch.object(UserEnumerateService, "validate_enumerate_params")
 @patch.object(UserReviewDataService, "apply_rules_to_update_user")
+@patch.object(UserReviewDataService, "check_if_able_to_update")
 @patch.object(UserUpdateData, "__init__", return_value=None)
 @patch.object(ResponseModel, "__init__", return_value=None)
 @patch.object(ResponseModel, "build_http_response", return_value=dummy_response)
@@ -159,6 +160,7 @@ async def test_update_user_data(
     mocked_build_response,
     mocked_response_instance,
     mocked_rules_application,
+    mocked_validation_step,
     mocked_validation_server_instance,
     mocked_validation,
     mocked_instance,

@@ -38,6 +38,10 @@ spec:
               value: "lionx"
             - name: MONGODB_USER_COLLECTION
               value: "users"
+            - name: ONBOARDING_STEPS_BR_URL
+              value: "http://router.fission.svc.cluster.local/onboarding/steps_br"
+            - name: ONBOARDING_STEPS_US_URL
+              value: "http://router.fission.svc.cluster.local/onboarding/steps_us"
             - name: HEIMDALL_FILE_BUCKET_NAME
               value: "heimdall_rsa"
             - name: HEIMDALL_AWS_ACCESS_KEY_ID

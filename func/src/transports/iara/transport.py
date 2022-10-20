@@ -16,7 +16,8 @@ class IaraTransport:
         )
         if not success:
             Gladsheim.error(
-                message=f"Failed to send user to queue of Sinacor account update"
+                message=f"Failed to send user to queue of Sinacor account update",
+                status_sent_to_iara=status_sent_to_iara,
             )
 
     @staticmethod
@@ -30,5 +31,6 @@ class IaraTransport:
         )
         if not success:
             Gladsheim.error(
-                message=f"Failed to send user to queue of DriveWealth account update"
+                message=f"Failed to send user to queue of DriveWealth account update",
+                status_sent_to_iara=status_sent_to_iara,
             )

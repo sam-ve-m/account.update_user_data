@@ -26,8 +26,8 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     HighRiskActivityNotAllowed,
                     ErrorOnSendAuditLog,
                     ErrorOnUpdateUser,
-                    ErrorOnDecodeJwt,
-                )
+                    ErrorOnDecodeJwt, InvalidOnboardingCurrentStep,
+)
                 from src.services.user_review import UserReviewDataService
 
 error_on_decode_jwt_case = (
@@ -56,6 +56,13 @@ invalid_nationality_case = (
     InvalidNationality.msg,
     InternalCode.INVALID_PARAMS,
     "Invalid params",
+    HTTPStatus.BAD_REQUEST,
+)
+invalid_onboarding_step_case = (
+    InvalidOnboardingCurrentStep(),
+    InvalidOnboardingCurrentStep.msg,
+    InternalCode.ONBOARDING_STEP_INCORRECT,
+    "Invalid Onboarding Step",
     HTTPStatus.BAD_REQUEST,
 )
 high_risk_activity_not_allowed_case = (
@@ -108,10 +115,11 @@ exception_case = (
         error_on_update_user_case,
         value_error_case,
         exception_case,
+        invalid_onboarding_step_case
     ],
 )
 @patch.object(UserEnumerateService, "validate_enumerate_params")
-@patch.object(UserReviewDataService, "apply_rules_to_update_user")
+@patch.object(UserReviewDataService, "update_user_data")
 @patch.object(Gladsheim, "error")
 @patch.object(JwtService, "decode_jwt_and_get_unique_id")
 @patch.object(ResponseModel, "__init__", return_value=None)
@@ -151,7 +159,7 @@ dummy_response = "response"
 @patch.object(JwtService, "decode_jwt_and_get_unique_id")
 @patch.object(UserEnumerateService, "__init__", return_value=None)
 @patch.object(UserEnumerateService, "validate_enumerate_params")
-@patch.object(UserReviewDataService, "apply_rules_to_update_user")
+@patch.object(UserReviewDataService, "update_user_data")
 @patch.object(UserReviewDataService, "check_if_able_to_update")
 @patch.object(UserUpdateData, "__init__", return_value=None)
 @patch.object(ResponseModel, "__init__", return_value=None)

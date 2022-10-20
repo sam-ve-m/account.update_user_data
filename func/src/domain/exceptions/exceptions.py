@@ -72,4 +72,4 @@ class OnboardingStepsStatusCodeNotOk(Exception):
 
 
 class InvalidOnboardingCurrentStep(Exception):
-    msg = "Jormungandr-Onboarding::validators::Ivalid Step: Invalid user step, it must have be finishd"
+    msg = "Jormungandr-Onboarding::validators::Ivalid Step: Invalid user step, it must have be finished"

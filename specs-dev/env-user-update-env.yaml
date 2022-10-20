@@ -1,4 +1,4 @@
-apiVersion: fission.io/v1
+ apiVersion: fission.io/v1
 kind: Environment
 metadata:
   creationTimestamp: null
@@ -43,7 +43,11 @@ spec:
             - name: HEIMDALL_AWS_ACCESS_KEY_ID
               value: "AKIATZVFXI25USQWCS5O"
             - name: HEIMDALL_AWS_SECRET_ACCESS_KEY
-              value: "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"
+              value: "/5pswHkrCgWhMYrV7TM7oVm8VtulfzdYKE2rlS8"
+            - name: ONBOARDING_STEPS_BR_URL
+              value: "http://router.fission.svc.cluster.local/onboarding/steps_br"
+            - name: ONBOARDING_STEPS_US_URL
+              value: "http://router.fission.svc.cluster.local/onboarding/steps_us"
             - name: HEIMDALL_REGION_NAME
               value: "sa-east-1"
             - name: HEIMDALL_BUCKET_NAME_KEY

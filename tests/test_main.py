@@ -25,7 +25,7 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     InvalidNationality,
                     HighRiskActivityNotAllowed,
                     ErrorOnSendAuditLog,
-                    ErrorOnUpdateUser,
+                    ErrorToUpdateUser,
                     ErrorOnDecodeJwt,
                     InvalidOnboardingCurrentStep,
                 )
@@ -81,8 +81,8 @@ error_on_send_audit_log_case = (
     HTTPStatus.INTERNAL_SERVER_ERROR,
 )
 error_on_update_user_case = (
-    ErrorOnUpdateUser(),
-    ErrorOnUpdateUser.msg,
+    ErrorToUpdateUser(),
+    ErrorToUpdateUser.msg,
     InternalCode.INTERNAL_SERVER_ERROR,
     "Unexpected error occurred",
     HTTPStatus.INTERNAL_SERVER_ERROR,

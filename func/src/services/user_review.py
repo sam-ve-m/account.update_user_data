@@ -1,11 +1,16 @@
+from datetime import datetime
+
 from etria_logger import Gladsheim
+from regis import Regis, RegisResponse
 
 from ..domain.enums.user_review import UserOnboardingStep
 from ..domain.exceptions.exceptions import (
     UserUniqueIdNotExists,
-    ErrorOnUpdateUser, InvalidOnboardingCurrentStep,
+    ErrorToUpdateUser,
+    InvalidOnboardingCurrentStep,
+    CriticalRiskClientNotAllowed,
+    FailedToGetData,
 )
-
 from ..domain.user_review.model import UserReviewModel
 from ..domain.user_review.validator import UserUpdateData
 from ..repositories.mongo_db.user.repository import UserRepository
@@ -18,7 +23,6 @@ from ..transports.onboarding_steps.transport import OnboardingSteps
 
 
 class UserReviewDataService:
-
     @staticmethod
     async def check_if_able_to_update(payload_validated: UserUpdateData, jwt: str):
         await UserReviewDataService._check_if_able_to_update_br(jwt)
@@ -32,7 +36,7 @@ class UserReviewDataService:
             Gladsheim.warning(
                 message=InvalidOnboardingCurrentStep.msg + " in BR",
                 onboarding_step=customer_steps,
-                jwt=jwt
+                jwt=jwt,
             )
             raise InvalidOnboardingCurrentStep()
 
@@ -43,14 +47,42 @@ class UserReviewDataService:
             Gladsheim.warning(
                 message=InvalidOnboardingCurrentStep.msg + " in US",
                 onboarding_step=customer_steps,
-                jwt=jwt
+                jwt=jwt,
             )
             raise InvalidOnboardingCurrentStep()
 
     @staticmethod
-    async def update_user_data(
-        unique_id: str, payload_validated: UserUpdateData
-    ):
+    async def rate_client_risk(user_review_model: UserReviewModel):
+        user_data = user_review_model.new_user_registration_data
+        try:
+            regis_response: RegisResponse = await Regis.rate_client_risk(
+                patrimony=user_data["assets"]["patrimony"],
+                address_city=user_data["address"]["city"],
+                profession=user_data["occupation"]["activity"],
+                is_pep=bool(user_data.get("is_politically_exposed_person")),
+                is_pep_related=bool(
+                    user_data.get("is_correlated_to_politically_exposed_person")
+                ),
+            )
+        except Exception as error:
+            Gladsheim.error(error=error, message="Error trying to rate client risk.")
+            raise FailedToGetData()
+
+        if not regis_response.risk_approval:
+            raise CriticalRiskClientNotAllowed(
+                f"unique_id: {user_review_model.unique_id,}, "
+                f"score: {regis_response.risk_score}"
+            )
+
+        user_review_model.add_risk_data(risk_data=regis_response)
+
+        await Audit.record_message_log_to_rate_client_risk(
+            user_review_model=user_review_model
+        )
+        user_review_model.update_new_data_with_risk_data()
+
+    @classmethod
+    async def update_user_data(cls, unique_id: str, payload_validated: UserUpdateData):
         user_data = await UserReviewDataService._get_user_data(unique_id=unique_id)
         (
             new_user_registration_data,
@@ -66,10 +98,14 @@ class UserReviewDataService:
             modified_register_data=modified_register_data,
             new_user_registration_data=new_user_registration_data,
         )
-        await Audit.record_message_log(user_review_model=user_review_model)
-        new_user_template = await user_review_model.get_new_user_data()
 
-        await UserReviewDataService._update_user(
+        await cls.rate_client_risk(user_review_model)
+        await Audit.record_message_log_to_update_registration_data(
+            user_review_model=user_review_model
+        )
+
+        new_user_template = await user_review_model.get_new_user_data()
+        await cls._update_user(
             unique_id=unique_id,
             new_user_registration_data=new_user_template,
         )
@@ -85,8 +121,17 @@ class UserReviewDataService:
 
     @staticmethod
     async def _update_user(unique_id: str, new_user_registration_data: dict):
+        new_user_registration_data.update(
+            {
+                "record_date_control": {
+                    "registry_updates": {
+                        "last_registration_data_update": datetime.utcnow(),
+                    }
+                }
+            }
+        )
         user_updated = await UserRepository.update_user(
             unique_id=unique_id, new_user_registration_data=new_user_registration_data
         )
         if not user_updated.matched_count:
-            raise ErrorOnUpdateUser()
+            raise ErrorToUpdateUser()

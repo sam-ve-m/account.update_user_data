@@ -333,7 +333,6 @@ class TimeExperience(Source):
 
 
 class OptionalDataBlock(BaseModel):
-
     @root_validator()
     def at_least_one_field(cls, values: Dict[str, Any]):
         for key, value in values.items():

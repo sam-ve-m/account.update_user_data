@@ -25,9 +25,10 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     InvalidNationality,
                     HighRiskActivityNotAllowed,
                     ErrorOnSendAuditLog,
-                    ErrorOnUpdateUser,
-                    ErrorOnDecodeJwt, InvalidOnboardingCurrentStep,
-)
+                    ErrorToUpdateUser,
+                    ErrorOnDecodeJwt,
+                    InvalidOnboardingCurrentStep,
+                )
                 from src.services.user_review import UserReviewDataService
 
 error_on_decode_jwt_case = (
@@ -80,8 +81,8 @@ error_on_send_audit_log_case = (
     HTTPStatus.INTERNAL_SERVER_ERROR,
 )
 error_on_update_user_case = (
-    ErrorOnUpdateUser(),
-    ErrorOnUpdateUser.msg,
+    ErrorToUpdateUser(),
+    ErrorToUpdateUser.msg,
     InternalCode.INTERNAL_SERVER_ERROR,
     "Unexpected error occurred",
     HTTPStatus.INTERNAL_SERVER_ERROR,
@@ -115,7 +116,7 @@ exception_case = (
         error_on_update_user_case,
         value_error_case,
         exception_case,
-        invalid_onboarding_step_case
+        invalid_onboarding_step_case,
     ],
 )
 @patch.object(UserEnumerateService, "validate_enumerate_params")

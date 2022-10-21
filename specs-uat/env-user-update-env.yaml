@@ -15,7 +15,7 @@ spec:
   keeparchive: false
   resources: {}
   runtime:
-    image: nexus.sigame.com.br/fission-async-cx:0.0.1
+    image: nexus.sigame.com.br/fission-async-cx:0.0.2
     podspec:
       containers:
         - name: user-update-env
@@ -28,6 +28,8 @@ spec:
               value: "HYPERCORN"
             - name: PERSEPHONE_USER_REVIEW_SCHEMA
               value: "user_update_register_data_schema"
+            - name: PERSEPHONE_USER_PLD_SCHEMA
+              value: "pld"
             - name: PERSEPHONE_TOPIC_USER
               value: "sphinx-persephone.user.crud"
             - name: PERSEPHONE_KAFKA_BROKERS
@@ -38,10 +40,6 @@ spec:
               value: "lionx"
             - name: MONGODB_USER_COLLECTION
               value: "users"
-            - name: ONBOARDING_STEPS_BR_URL
-              value: "http://router.fission.svc.cluster.local/onboarding/steps_br"
-            - name: ONBOARDING_STEPS_US_URL
-              value: "http://router.fission.svc.cluster.local/onboarding/steps_us"
             - name: HEIMDALL_FILE_BUCKET_NAME
               value: "heimdall_rsa"
             - name: HEIMDALL_AWS_ACCESS_KEY_ID
@@ -54,6 +52,8 @@ spec:
               value: "auth-gateway-keys-uat"
             - name: HEIMDALL_JWT_REQUIRED_FIELDS
               value: "[]"
+            - name: IARA_KAFKA_BROKERS
+              value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
             - name: HEIMDALL_REDIS_URL
               value: "redis://heimdal:FBJAnjkqw21yjewkDSA@172.30.19.183:6379?db=1"
             - name: ORACLE_BASE_DSN
@@ -68,6 +68,18 @@ spec:
               value: "UTF-8"
             - name: ORACLE_PORT
               value: "1521"
-            - name: IARA_KAFKA_BROKERS
-              value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+            - name: ONBOARDING_STEPS_BR_URL
+              value: "http://router.fission.svc.cluster.local/onboarding/steps_br"
+            - name: REGIS_REDIS_URL
+              value: "redis://regis:Vbdhikjlcfgdtiyt436VCbdjk@172.30.19.183:6379"
+            - name: REGIS_ORACLE_BASE_DSN
+              value: "172.30.18.44"
+            - name: REGIS_ORACLE_PORT
+              value: "1521"
+            - name: REGIS_ORACLE_USER
+              value: "UREGIDB001"
+            - name: REGIS_ORACLE_PASSWORD
+              value: "PE2Ed24Kb5WiQ05"
+            - name: REGIS_ORACLE_SERVICE
+              value: "OPDBDEV.SUBPRIV.VCNDEV.ORACLEVCN.COM"
   version: 3

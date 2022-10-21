@@ -14,17 +14,17 @@ class OnboardingSteps:
     async def _get_customer_steps(host: str, jwt: str) -> str:
         headers = {"x-thebes-answer": jwt}
         async with AsyncClient() as httpx_client:
-            request_result = await httpx_client.get(
-                host, headers=headers
-            )
+            request_result = await httpx_client.get(host, headers=headers)
             if not request_result.status_code == HTTPStatus.OK:
                 Gladsheim.error(
                     message=OnboardingStepsStatusCodeNotOk.msg,
                     status=request_result.status_code,
-                    content=request_result.content
+                    content=request_result.content,
                 )
                 raise OnboardingStepsStatusCodeNotOk()
-            user_current_step = request_result.json().get("result", {}).get("current_step")
+            user_current_step = (
+                request_result.json().get("result", {}).get("current_step")
+            )
         return user_current_step
 
     @staticmethod

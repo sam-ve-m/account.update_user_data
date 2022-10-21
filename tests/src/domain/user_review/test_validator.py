@@ -9,7 +9,8 @@ from src.domain.user_review.validator import (
     CnpjSource,
     EmailSource,
     CpfSource,
-    ExternalExchangeAccountUsUpdate, OptionalDataBlock,
+    ExternalExchangeAccountUsUpdate,
+    OptionalDataBlock,
 )
 
 register_dummy = {

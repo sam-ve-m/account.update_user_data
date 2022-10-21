@@ -17,7 +17,9 @@ from src.domain.exceptions.exceptions import (
     InvalidMaritalStatus,
     InvalidCountryAcronym,
     ErrorOnGetUniqueId,
-    HighRiskActivityNotAllowed, OnboardingStepsStatusCodeNotOk, InvalidOnboardingCurrentStep,
+    HighRiskActivityNotAllowed,
+    OnboardingStepsStatusCodeNotOk,
+    InvalidOnboardingCurrentStep,
 )
 from src.domain.response.model import ResponseModel
 from src.domain.user_review.validator import UserUpdateData
@@ -108,7 +110,9 @@ async def update_user_data() -> flask.Response:
         return response
 
     except (
-            ErrorOnSendAuditLog, ErrorOnUpdateUser, OnboardingStepsStatusCodeNotOk
+        ErrorOnSendAuditLog,
+        ErrorOnUpdateUser,
+        OnboardingStepsStatusCodeNotOk,
     ) as ex:
         Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(

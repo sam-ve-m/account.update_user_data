@@ -5,7 +5,8 @@ from etria_logger import Gladsheim
 
 from func.src.domain.exceptions.exceptions import (
     UserUniqueIdNotExists,
-    ErrorOnUpdateUser, InvalidOnboardingCurrentStep,
+    ErrorOnUpdateUser,
+    InvalidOnboardingCurrentStep,
 )
 from func.src.services.user_review import UserReviewDataService
 from func.src.domain.enums.user_review import UserOnboardingStep
@@ -91,8 +92,8 @@ dummy_value = MagicMock()
 @patch.object(UserReviewDataService, "_check_if_able_to_update_br")
 @patch.object(UserReviewDataService, "_check_if_able_to_update_us")
 async def test_check_if_able_to_update_only_br(
-        mocked_us_validation,
-        mocked_br_validation,
+    mocked_us_validation,
+    mocked_br_validation,
 ):
     dummy_value.external_exchange_account_us = True
     await UserReviewDataService.check_if_able_to_update(dummy_value, dummy_value)
@@ -104,8 +105,8 @@ async def test_check_if_able_to_update_only_br(
 @patch.object(UserReviewDataService, "_check_if_able_to_update_br")
 @patch.object(UserReviewDataService, "_check_if_able_to_update_us")
 async def test_check_if_able_to_update_br_and_us(
-        mocked_us_validation,
-        mocked_br_validation,
+    mocked_us_validation,
+    mocked_br_validation,
 ):
     dummy_value.external_exchange_account_us = False
     await UserReviewDataService.check_if_able_to_update(dummy_value, dummy_value)
@@ -116,10 +117,7 @@ async def test_check_if_able_to_update_br_and_us(
 @pytest.mark.asyncio
 @patch.object(OnboardingSteps, "get_customer_steps_br")
 @patch.object(Gladsheim, "warning")
-async def test_check_if_able_to_update_br(
-        mocked_logger,
-        mocked_transport
-):
+async def test_check_if_able_to_update_br(mocked_logger, mocked_transport):
     mocked_transport.return_value = UserOnboardingStep.FINISHED
     await UserReviewDataService._check_if_able_to_update_br(dummy_value)
     mocked_transport.assert_called_once_with(jwt=dummy_value)
@@ -129,10 +127,7 @@ async def test_check_if_able_to_update_br(
 @pytest.mark.asyncio
 @patch.object(OnboardingSteps, "get_customer_steps_br")
 @patch.object(Gladsheim, "warning")
-async def test_check_if_able_to_update_br_with_warning(
-        mocked_logger,
-        mocked_transport
-):
+async def test_check_if_able_to_update_br_with_warning(mocked_logger, mocked_transport):
     mocked_transport.return_value = dummy_value
     with pytest.raises(InvalidOnboardingCurrentStep):
         await UserReviewDataService._check_if_able_to_update_br(dummy_value)
@@ -143,10 +138,7 @@ async def test_check_if_able_to_update_br_with_warning(
 @pytest.mark.asyncio
 @patch.object(OnboardingSteps, "get_customer_steps_us")
 @patch.object(Gladsheim, "warning")
-async def test_check_if_able_to_update_us(
-        mocked_logger,
-        mocked_transport
-):
+async def test_check_if_able_to_update_us(mocked_logger, mocked_transport):
     mocked_transport.return_value = UserOnboardingStep.FINISHED
     await UserReviewDataService._check_if_able_to_update_us(dummy_value)
     mocked_transport.assert_called_once_with(jwt=dummy_value)
@@ -156,10 +148,7 @@ async def test_check_if_able_to_update_us(
 @pytest.mark.asyncio
 @patch.object(OnboardingSteps, "get_customer_steps_us")
 @patch.object(Gladsheim, "warning")
-async def test_check_if_able_to_update_us_with_warning(
-        mocked_logger,
-        mocked_transport
-):
+async def test_check_if_able_to_update_us_with_warning(mocked_logger, mocked_transport):
     mocked_transport.return_value = dummy_value
     with pytest.raises(InvalidOnboardingCurrentStep):
         await UserReviewDataService._check_if_able_to_update_us(dummy_value)

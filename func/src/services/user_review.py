@@ -3,7 +3,8 @@ from etria_logger import Gladsheim
 from ..domain.enums.user_review import UserOnboardingStep
 from ..domain.exceptions.exceptions import (
     UserUniqueIdNotExists,
-    ErrorOnUpdateUser, InvalidOnboardingCurrentStep,
+    ErrorOnUpdateUser,
+    InvalidOnboardingCurrentStep,
 )
 
 from ..domain.user_review.model import UserReviewModel
@@ -18,7 +19,6 @@ from ..transports.onboarding_steps.transport import OnboardingSteps
 
 
 class UserReviewDataService:
-
     @staticmethod
     async def check_if_able_to_update(payload_validated: UserUpdateData, jwt: str):
         await UserReviewDataService._check_if_able_to_update_br(jwt)
@@ -32,7 +32,7 @@ class UserReviewDataService:
             Gladsheim.warning(
                 message=InvalidOnboardingCurrentStep.msg + " in BR",
                 onboarding_step=customer_steps,
-                jwt=jwt
+                jwt=jwt,
             )
             raise InvalidOnboardingCurrentStep()
 
@@ -43,14 +43,12 @@ class UserReviewDataService:
             Gladsheim.warning(
                 message=InvalidOnboardingCurrentStep.msg + " in US",
                 onboarding_step=customer_steps,
-                jwt=jwt
+                jwt=jwt,
             )
             raise InvalidOnboardingCurrentStep()
 
     @staticmethod
-    async def update_user_data(
-        unique_id: str, payload_validated: UserUpdateData
-    ):
+    async def update_user_data(unique_id: str, payload_validated: UserUpdateData):
         user_data = await UserReviewDataService._get_user_data(unique_id=unique_id)
         (
             new_user_registration_data,

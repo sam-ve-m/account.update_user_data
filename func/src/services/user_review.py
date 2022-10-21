@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from etria_logger import Gladsheim
 from regis import Regis, RegisResponse
 
@@ -119,6 +121,15 @@ class UserReviewDataService:
 
     @staticmethod
     async def _update_user(unique_id: str, new_user_registration_data: dict):
+        new_user_registration_data.update(
+            {
+                "record_date_control": {
+                    "registry_updates": {
+                        "last_registration_data_update": datetime.utcnow(),
+                    }
+                }
+            }
+        )
         user_updated = await UserRepository.update_user(
             unique_id=unique_id, new_user_registration_data=new_user_registration_data
         )

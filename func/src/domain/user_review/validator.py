@@ -332,7 +332,16 @@ class TimeExperience(Source):
     value: TimeExperienceUs
 
 
-class UserPersonalDataUpdate(BaseModel):
+class OptionalDataBlock(BaseModel):
+    @root_validator()
+    def at_least_one_field(cls, values: Dict[str, Any]):
+        for key, value in values.items():
+            if value is not None:
+                return values
+        raise ValueError("At least one update is required")
+
+
+class UserPersonalDataUpdate(OptionalDataBlock):
     name: Optional[NameSource]
     nick_name: Optional[NickNameSource]
     birth_date: Optional[BirthDateSource]
@@ -354,12 +363,12 @@ class UserPersonalDataUpdate(BaseModel):
     birth_place_city: Optional[CountySource]
 
 
-class UserMaritalDataUpdate(BaseModel):
+class UserMaritalDataUpdate(OptionalDataBlock):
     status: MaritalStatusSource
     spouse: Optional[SpouseSource]
 
 
-class UserDocumentsDataUpdate(BaseModel):
+class UserDocumentsDataUpdate(OptionalDataBlock):
     cpf: Optional[CpfSource]
     identity_type: Optional[DocumentTypesSource]
     identity_number: Optional[DocumentNumberSource]
@@ -368,7 +377,7 @@ class UserDocumentsDataUpdate(BaseModel):
     state: Optional[StateSource]
 
 
-class UserAddressDataUpdate(BaseModel):
+class UserAddressDataUpdate(OptionalDataBlock):
     country: Optional[CountrySource]
     state: Optional[StateSource]
     city: Optional[CountySource]
@@ -380,7 +389,7 @@ class UserAddressDataUpdate(BaseModel):
     complement: Optional[ComplementSource]
 
 
-class ExternalExchangeAccountUsUpdate(BaseModel):
+class ExternalExchangeAccountUsUpdate(OptionalDataBlock):
     is_politically_exposed: Optional[PoliticallyExposed]
     is_exchange_member: Optional[ExchangeMember]
     time_experience: Optional[TimeExperience]
@@ -394,24 +403,17 @@ class ExternalExchangeAccountUsUpdate(BaseModel):
     @root_validator()
     def validate(cls, values: Dict[str, Any]):
         is_company_director = values.get("is_company_director", {}).get("value")
-        company_name = values.get("is_company_director_of").get("value")
-        if is_company_director and not company_name:
+        company_name = values.get("is_company_director_of", {}).get("value")
+        if bool(is_company_director) != bool(company_name):
             raise ValueError(
                 "Need to inform the field company_director_of if you are a company director"
             )
         return values
 
 
-class UserUpdateData(BaseModel):
+class UserUpdateData(OptionalDataBlock):
     personal: Optional[UserPersonalDataUpdate]
     marital: Optional[UserMaritalDataUpdate]
     documents: Optional[UserDocumentsDataUpdate]
     address: Optional[UserAddressDataUpdate]
     external_exchange_account_us: Optional[ExternalExchangeAccountUsUpdate]
-
-    @root_validator()
-    def validate(cls, values: Dict[str, Any]):
-        for key, value in values.items():
-            if value is not None:
-                return values
-        raise ValueError("At least one update is required")

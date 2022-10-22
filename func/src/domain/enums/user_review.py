@@ -12,4 +12,4 @@ class DocumentTypes(StrEnum):
 
 
 class UserOnboardingStep(StrEnum):
-    DATA_VALIDATION = "data_validation"
+    FINISHED = "finished"

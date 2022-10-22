@@ -1,4 +1,4 @@
-apiVersion: fission.io/v1
+ apiVersion: fission.io/v1
 kind: Environment
 metadata:
   creationTimestamp: null
@@ -15,7 +15,7 @@ spec:
   keeparchive: false
   resources: {}
   runtime:
-    image: nexus.sigame.com.br/fission-async-cx:0.0.1
+    image: nexus.sigame.com.br/fission-async-cx:0.0.2
     podspec:
       containers:
         - name: user-update-env
@@ -28,6 +28,8 @@ spec:
               value: "HYPERCORN"
             - name: PERSEPHONE_USER_REVIEW_SCHEMA
               value: "user_update_register_data_schema"
+            - name: PERSEPHONE_USER_PLD_SCHEMA
+              value: "pld"
             - name: PERSEPHONE_TOPIC_USER
               value: "sphinx-persephone.user.crud"
             - name: PERSEPHONE_KAFKA_BROKERS
@@ -56,6 +58,8 @@ spec:
               value: "172.30.10.227"
             - name: ORACLE_USER
               value: "ujormdb001"
+            - name: IARA_KAFKA_BROKERS
+              value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
             - name: ORACLE_PASSWORD
               value: "kALneMdsin767"
             - name: ORACLE_SERVICE
@@ -64,6 +68,18 @@ spec:
               value: "UTF-8"
             - name: ORACLE_PORT
               value: "1521"
-            - name: IARA_KAFKA_BROKERS
-              value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+            - name: ONBOARDING_STEPS_BR_URL
+              value: "http://router.fission.svc.cluster.local/onboarding/steps_br"
+            - name: REGIS_REDIS_URL
+              value: "redis://regis:IUmndnhaioaODSAy674320SCBAghj@172.30.11.235:6379"
+            - name: REGIS_ORACLE_BASE_DSN
+              value: "172.30.10.227"
+            - name: REGIS_ORACLE_PORT
+              value: "1521"
+            - name: REGIS_ORACLE_USER
+              value: "UREGIDB001"
+            - name: REGIS_ORACLE_PASSWORD
+              value: "S2yQ1rA3Tj8qdIL"
+            - name: REGIS_ORACLE_SERVICE
+              value: "OPDBDEV.SUBPRIV.VCNDEV.ORACLEVCN.COM"
   version: 3

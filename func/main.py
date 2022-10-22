@@ -8,7 +8,7 @@ from src.domain.exceptions.exceptions import (
     ErrorOnDecodeJwt,
     UserUniqueIdNotExists,
     ErrorOnSendAuditLog,
-    ErrorOnUpdateUser,
+    ErrorToUpdateUser,
     InvalidNationality,
     InvalidCity,
     InvalidState,
@@ -18,6 +18,9 @@ from src.domain.exceptions.exceptions import (
     InvalidCountryAcronym,
     ErrorOnGetUniqueId,
     HighRiskActivityNotAllowed,
+    OnboardingStepsStatusCodeNotOk,
+    InvalidOnboardingCurrentStep,
+    CriticalRiskClientNotAllowed,
 )
 from src.domain.response.model import ResponseModel
 from src.domain.user_review.validator import UserUpdateData
@@ -36,7 +39,8 @@ async def update_user_data() -> flask.Response:
         await UserEnumerateService(
             payload_validated=payload_validated
         ).validate_enumerate_params()
-        await UserReviewDataService.apply_rules_to_update_user(
+        await UserReviewDataService.check_if_able_to_update(payload_validated, jwt)
+        await UserReviewDataService.update_user_data(
             unique_id=unique_id, payload_validated=payload_validated
         )
         response = ResponseModel(
@@ -97,14 +101,29 @@ async def update_user_data() -> flask.Response:
         ).build_http_response(status=HTTPStatus.FORBIDDEN)
         return response
 
-    except ErrorOnSendAuditLog as ex:
+    except CriticalRiskClientNotAllowed as ex:
         Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
-            success=False, code=InternalCode.INTERNAL_SERVER_ERROR, message=msg_error
-        ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
+            success=False,
+            code=InternalCode.INVALID_PARAMS,
+            message="Critical risk client not allowed",
+        ).build_http_response(status=HTTPStatus.FORBIDDEN)
         return response
 
-    except ErrorOnUpdateUser as ex:
+    except InvalidOnboardingCurrentStep as ex:
+        Gladsheim.error(error=ex, message=ex.msg)
+        response = ResponseModel(
+            success=False,
+            code=InternalCode.ONBOARDING_STEP_INCORRECT,
+            message="Invalid Onboarding Step",
+        ).build_http_response(status=HTTPStatus.BAD_REQUEST)
+        return response
+
+    except (
+        ErrorOnSendAuditLog,
+        ErrorToUpdateUser,
+        OnboardingStepsStatusCodeNotOk,
+    ) as ex:
         Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
             success=False, code=InternalCode.INTERNAL_SERVER_ERROR, message=msg_error

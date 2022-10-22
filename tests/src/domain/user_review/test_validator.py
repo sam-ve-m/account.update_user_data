@@ -1,15 +1,16 @@
 import pytest
 
-from func.src.domain.exceptions.exceptions import (
+from src.domain.exceptions.exceptions import (
     HighRiskActivityNotAllowed,
     InvalidEmail,
 )
-from func.src.domain.user_review.validator import (
+from src.domain.user_review.validator import (
     UserUpdateData,
     CnpjSource,
     EmailSource,
     CpfSource,
     ExternalExchangeAccountUsUpdate,
+    OptionalDataBlock,
 )
 
 register_dummy = {
@@ -126,7 +127,7 @@ def test_company_director():
 
 
 def test_root_validator():
-    UserUpdateData.validate(
+    OptionalDataBlock.at_least_one_field(
         {
             "is_company_director": True,
         }
@@ -135,7 +136,7 @@ def test_root_validator():
 
 def test_root_validator_invalid_value():
     with pytest.raises(ValueError):
-        UserUpdateData.validate(
+        OptionalDataBlock.at_least_one_field(
             {
                 "is_company_director_of": None,
             }

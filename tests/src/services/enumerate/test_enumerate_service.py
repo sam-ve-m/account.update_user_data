@@ -53,7 +53,7 @@ def enumerate_model_missing_some_data():
 
 
 @fixture(scope="function")
-def enumerate_model_missing_foreign_account_tax_value():
+def enumerate_model_missing_tax_residences_value():
     enumerate_model = UserEnumerateDataModel(
         payload_validated=user_review_stub_missing_params
     )
@@ -343,6 +343,6 @@ async def test_when_success_to_validate_enumerate_params_then_return_true(
     assert fake_instance.user_enumerate_model.get_activity.called
     assert fake_instance.user_enumerate_model.get_document_state.called
     assert fake_instance.user_enumerate_model.get_nationalities.called
-    assert fake_instance.user_enumerate_model.get_country_foreign_account_tax.called
+    assert fake_instance.user_enumerate_model.get_country_tax_residences.called
     assert fake_instance.user_enumerate_model.get_marital_status.called
     assert fake_instance.user_enumerate_model.get_combination_address.called

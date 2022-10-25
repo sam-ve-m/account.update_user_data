@@ -7,17 +7,17 @@ class StubUserReview:
 
 
 payload_foreign_none = stub_payload_missing_data = {
-    "personal": {"foreign_account_tax": None}
+    "personal": {"tax_residences": None}
 }
 
 payload_foreign_missing_value = {
-    "personal": {"foreign_account_tax": {"anything": "anything"}}
+    "personal": {"tax_residences": {"anything": "anything"}}
 }
 
 payload_foreign_missing_contry = {
     "personal": {
         "nationality": {"value": 1, "source": "by_test"},
-        "foreign_account_tax": {
+        "tax_residences": {
             "source": "google",
             "value": [{"country": "BRA"}, {"teste": "teste"}],
         },

@@ -26,7 +26,7 @@ class UserEnumerateService:
         await self._validate_state(state=state)
         nationalities = await self.user_enumerate_model.get_nationalities()
         await self._validate_nationality(nationalities=nationalities)
-        countries = await self.user_enumerate_model.get_country_foreign_account_tax()
+        countries = await self.user_enumerate_model.get_country_tax_residences()
         await self._validate_country_acronym(countries=countries)
         marital_code = await self.user_enumerate_model.get_marital_status()
         await self._validate_marital_status(marital_code=marital_code)

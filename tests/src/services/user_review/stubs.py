@@ -27,7 +27,7 @@ stub_payload = {
         "company_cnpj": {"value": "36923006000188", "source": "by_test"},
         "patrimony": {"value": 500000.0, "source": "by_test"},
         "income": {"value": 200000.0, "source": "by_test"},
-        "foreign_account_tax": {
+        "tax_residences": {
             "value": [
                 {"country": "EUA", "tax_number": "abc123"},
                 {"country": "ING", "tax_number": "abc123"},
@@ -82,7 +82,7 @@ stub_payload_missing_data = {
         "company_cnpj": None,
         "patrimony": {"value": 500000.0, "source": "by_test"},
         "income": {"value": 200000.0, "source": "by_test"},
-        "foreign_account_tax": None,
+        "tax_residences": None,
         "birth_place_country": {},
         "birth_place_city": {},
         "birth_place_state": {},

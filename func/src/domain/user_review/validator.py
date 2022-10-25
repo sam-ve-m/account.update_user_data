@@ -356,7 +356,7 @@ class UserPersonalDataUpdate(OptionalDataBlock):
     company_cnpj: Optional[CnpjSource]
     patrimony: Optional[PatrimonySource]
     income: Optional[IncomeSource]
-    foreign_account_tax: Optional[TaxResidenceSource]
+    tax_residences: Optional[TaxResidenceSource]
     us_person: Optional[UsPersonSource]
     birth_place_country: Optional[CountrySource]
     birth_place_state: Optional[StateSource]

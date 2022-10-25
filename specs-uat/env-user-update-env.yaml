@@ -81,5 +81,5 @@ spec:
             - name: REGIS_ORACLE_PASSWORD
               value: "PE2Ed24Kb5WiQ05"
             - name: REGIS_ORACLE_SERVICE
-              value: "OPDBDEV.SUBPRIV.VCNDEV.ORACLEVCN.COM"
+              value: "OPDBUAT.SUBPRIV.VCNUAT.ORACLEVCN.COM"
   version: 3

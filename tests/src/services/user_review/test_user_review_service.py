@@ -195,12 +195,13 @@ async def test_rate_client_risk(rate_client_risk, audit_log):
 
 
 @pytest.mark.asyncio
+@patch.object(Gladsheim, "warning")
 @patch("func.src.services.user_review.Audit.record_message_log_to_rate_client_risk")
 @patch.object(
     Regis,
     "rate_client_risk",
 )
-async def test_rate_client_risk_when_risk_is_not_aprroved(rate_client_risk, audit_log):
+async def test_rate_client_risk_when_risk_is_not_aprroved(rate_client_risk, audit_log, etria_warning):
     risk_data_stub = RegisResponse(
         risk_score=19,
         risk_rating=RiskRatings.CRITICAL_RISK,
@@ -214,8 +215,8 @@ async def test_rate_client_risk_when_risk_is_not_aprroved(rate_client_risk, audi
         ),
     )
     rate_client_risk.return_value = risk_data_stub
-    with pytest.raises(CriticalRiskClientNotAllowed):
-        result = await UserReviewDataService.rate_client_risk(stub_user_review_model)
+    result = await UserReviewDataService.rate_client_risk(stub_user_review_model)
+    assert etria_warning.called
     assert rate_client_risk.called
 
 

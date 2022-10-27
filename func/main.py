@@ -101,15 +101,6 @@ async def update_user_data() -> flask.Response:
         ).build_http_response(status=HTTPStatus.FORBIDDEN)
         return response
 
-    except CriticalRiskClientNotAllowed as ex:
-        Gladsheim.error(error=ex, message=ex.msg)
-        response = ResponseModel(
-            success=False,
-            code=InternalCode.INVALID_PARAMS,
-            message="Critical risk client not allowed",
-        ).build_http_response(status=HTTPStatus.FORBIDDEN)
-        return response
-
     except InvalidOnboardingCurrentStep as ex:
         Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(

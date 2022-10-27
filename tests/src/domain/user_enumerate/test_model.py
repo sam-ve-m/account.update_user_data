@@ -13,7 +13,7 @@ user_data_dummy = {
         "birth_place_country": {"source": "app", "value": "BRA"},
         "birth_place_state": {"source": "app", "value": "PA"},
         "birth_place_city": {"source": "app", "value": 2412},
-        "foreign_account_tax": {
+        "tax_residences": {
             "source": "app",
             "value": [{"country": "USA", "tax_number": "132"}],
         },
@@ -140,20 +140,20 @@ async def test_get_combination_address_when_a_value_is_missing():
 
 
 @pytest.mark.asyncio
-async def test_get_country_foreign_account_tax():
+async def test_get_country_tax_residences():
     user_data = deepcopy(user_data_dummy)
     model = UserEnumerateDataModel(UserUpdateData(**user_data))
-    result = await model.get_country_foreign_account_tax()
+    result = await model.get_country_tax_residences()
     expected_result = ["USA"]
     assert result == expected_result
 
 
 @pytest.mark.asyncio
-async def test_get_country_foreign_account_tax_when_personal_is_none():
+async def test_get_country_tax_residences_when_personal_is_none():
     user_data = deepcopy(user_data_dummy)
     user_data.pop("personal")
     model = UserEnumerateDataModel(UserUpdateData(**user_data))
-    result = await model.get_country_foreign_account_tax()
+    result = await model.get_country_tax_residences()
     expected_result = None
     assert result == expected_result
 

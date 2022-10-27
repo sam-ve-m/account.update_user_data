@@ -69,10 +69,12 @@ class UserReviewDataService:
             raise FailedToGetData()
 
         if not regis_response.risk_approval:
-            raise CriticalRiskClientNotAllowed(
+            message = (
+                "Updated client now has CRITICAL RISK -> "
                 f"unique_id: {user_review_model.unique_id,}, "
                 f"score: {regis_response.risk_score}"
             )
+            Gladsheim.warning(message=message)
 
         user_review_model.add_risk_data(risk_data=regis_response)
 

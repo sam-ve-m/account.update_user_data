@@ -267,7 +267,7 @@ class PhoneSource(Source):
 
 class SpouseSource(BaseModel):
     name: NameSource
-    cpf: CpfSource
+    cpf: Optional[CpfSource]
     nationality: NationalitySource
 
 

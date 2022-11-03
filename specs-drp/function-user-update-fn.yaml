@@ -1,0 +1,55 @@
+include:
+- ./func/*
+kind: ArchiveUploadSpec
+name: func-FXya
+
+---
+apiVersion: fission.io/v1
+kind: Package
+metadata:
+  creationTimestamp: null
+  name: user-update-fn-c38e2857-d782-4670-a0d0-ee31978b6fe2
+  namespace: default
+spec:
+  deployment:
+    checksum: {}
+  environment:
+    name: user-update-env
+    namespace: default
+  source:
+    checksum: {}
+    type: url
+    url: archive://func-FXya
+status:
+  buildstatus: pending
+  lastUpdateTimestamp: "2022-09-30T18:17:24Z"
+
+---
+apiVersion: fission.io/v1
+kind: Function
+metadata:
+  creationTimestamp: null
+  name: user-update-fn
+  namespace: default
+spec:
+  InvokeStrategy:
+    ExecutionStrategy:
+      ExecutorType: newdeploy
+      MaxScale: 3
+      MinScale: 1
+      SpecializationTimeout: 120
+      TargetCPUPercent: 80
+    StrategyType: execution
+  concurrency: 500
+  environment:
+    name: user-update-env
+    namespace: default
+  functionTimeout: 60
+  idletimeout: 120
+  package:
+    functionName: main.update_user_data
+    packageref:
+      name: user-update-fn-c38e2857-d782-4670-a0d0-ee31978b6fe2
+      namespace: default
+  requestsPerPod: 1
+  resources: {}

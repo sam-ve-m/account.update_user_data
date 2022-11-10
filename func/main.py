@@ -3,7 +3,7 @@ from http import HTTPStatus
 from etria_logger import Gladsheim
 import flask
 
-from func.src.domain.thebes_answer.model import ThebesAnswer
+from src.domain.thebes_answer.model import ThebesAnswer
 from src.domain.enums.code import InternalCode
 from src.domain.exceptions.exceptions import (
     ErrorOnDecodeJwt,
@@ -42,7 +42,7 @@ async def update_user_data() -> flask.Response:
         await UserEnumerateService(
             payload_validated=payload_validated
         ).validate_enumerate_params()
-        await UserReviewDataService.check_if_able_to_update(payload_validated, jwt)
+        await UserReviewDataService.check_if_able_to_update(payload_validated, thebes_answer, jwt)
         await UserReviewDataService.update_user_data(
             unique_id=thebes_answer.unique_id, payload_validated=payload_validated
         )

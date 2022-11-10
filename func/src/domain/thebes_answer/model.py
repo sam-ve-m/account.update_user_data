@@ -1,4 +1,4 @@
-from func.src.domain.exceptions.exceptions import ErrorOnGetUniqueId, BrAccountIsBlocked, ErrorOnGetAccountBrIsBlocked
+from src.domain.exceptions.exceptions import ErrorOnGetUniqueId, BrAccountIsBlocked, ErrorOnGetAccountBrIsBlocked
 
 
 class ThebesAnswer:

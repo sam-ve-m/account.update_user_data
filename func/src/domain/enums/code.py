@@ -10,6 +10,7 @@ class InternalCode(IntEnum):
     DATA_ALREADY_EXISTS = 98
     DATA_NOT_FOUND = 99
     INTERNAL_SERVER_ERROR = 100
+    FINANCIAL_CAPACITY_NOT_VALID = 210
 
     def __repr__(self):
         return self.value

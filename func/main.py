@@ -21,6 +21,7 @@ from src.domain.exceptions.exceptions import (
     OnboardingStepsStatusCodeNotOk,
     InvalidOnboardingCurrentStep,
     CriticalRiskClientNotAllowed,
+    FinancialCapacityNotValid,
 )
 from src.domain.response.model import ResponseModel
 from src.domain.user_review.validator import UserUpdateData
@@ -37,7 +38,7 @@ async def update_user_data() -> flask.Response:
         payload_validated = UserUpdateData(**raw_payload)
         unique_id = await JwtService.decode_jwt_and_get_unique_id(jwt=jwt)
         await UserEnumerateService(
-            payload_validated=payload_validated
+            payload_validated=payload_validated, unique_id=unique_id
         ).validate_enumerate_params()
         await UserReviewDataService.check_if_able_to_update(payload_validated, jwt)
         await UserReviewDataService.update_user_data(
@@ -74,6 +75,15 @@ async def update_user_data() -> flask.Response:
             success=False,
             code=InternalCode.DATA_NOT_FOUND,
             message="There is no user with this unique_id",
+        ).build_http_response(status=HTTPStatus.BAD_REQUEST)
+        return response
+
+    except FinancialCapacityNotValid as ex:
+        Gladsheim.error(error=ex, message=ex.msg)
+        response = ResponseModel(
+            success=False,
+            code=InternalCode.FINANCIAL_CAPACITY_NOT_VALID,
+            message="Insufficient financial capacity",
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)
         return response
 

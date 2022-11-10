@@ -83,3 +83,9 @@ class UserEnumerateDataModel:
             if parent_value is None:
                 return
         return parent_value
+
+    def get_patrimony_and_income(self) -> tuple:
+        patrimony = self.get_value("personal.patrimony.value")
+        income = self.get_value("personal.income.value")
+        return patrimony, income
+

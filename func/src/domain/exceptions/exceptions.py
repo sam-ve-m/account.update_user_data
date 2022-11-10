@@ -27,6 +27,10 @@ class UserUniqueIdNotExists(Exception):
     msg = "Jormungandr-Onboarding::get_registration_data::Not exists an user_data with this unique_id"
 
 
+class FinancialCapacityNotValid(Exception):
+    msg = "Jormungandr-Account::Insufficient financial capacity"
+
+
 class InvalidEmail(Exception):
     msg = "Invalid email address"
 

@@ -9,8 +9,9 @@ from ..domain.exceptions.exceptions import (
     ErrorToUpdateUser,
     InvalidOnboardingCurrentStep,
     CriticalRiskClientNotAllowed,
-    FailedToGetData,
+    FailedToGetData, BrAccountIsBlocked,
 )
+from ..domain.thebes_answer.model import ThebesAnswer
 from ..domain.user_review.model import UserReviewModel
 from ..domain.user_review.validator import UserUpdateData
 from ..repositories.mongo_db.user.repository import UserRepository
@@ -24,10 +25,13 @@ from ..transports.onboarding_steps.transport import OnboardingSteps
 
 class UserReviewDataService:
     @staticmethod
-    async def check_if_able_to_update(payload_validated: UserUpdateData, jwt: str):
+    async def check_if_able_to_update(payload_validated: UserUpdateData, thebes_answer: ThebesAnswer, jwt: str):
+        thebes_answer.check_if_account_br_is_blocked()
         await UserReviewDataService._check_if_able_to_update_br(jwt)
         if payload_validated.external_exchange_account_us:
             await UserReviewDataService._check_if_able_to_update_us(jwt)
+
+
 
     @staticmethod
     async def _check_if_able_to_update_br(jwt: str):

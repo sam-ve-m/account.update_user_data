@@ -28,6 +28,7 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     ErrorToUpdateUser,
                     ErrorOnDecodeJwt,
                     InvalidOnboardingCurrentStep,
+                    FinancialCapacityNotValid
                 )
                 from src.services.user_review import UserReviewDataService
 
@@ -50,6 +51,13 @@ user_unique_id_not_exists_case = (
     UserUniqueIdNotExists.msg,
     InternalCode.DATA_NOT_FOUND,
     "There is no user with this unique_id",
+    HTTPStatus.BAD_REQUEST,
+)
+financial_capacity_not_valid_case = (
+    FinancialCapacityNotValid(),
+    FinancialCapacityNotValid.msg,
+    InternalCode.FINANCIAL_CAPACITY_NOT_VALID,
+    "Insufficient financial capacity",
     HTTPStatus.BAD_REQUEST,
 )
 invalid_nationality_case = (
@@ -110,6 +118,7 @@ exception_case = (
         error_on_decode_jwt_case,
         error_on_get_unique_id_case,
         user_unique_id_not_exists_case,
+        financial_capacity_not_valid_case,
         invalid_nationality_case,
         high_risk_activity_not_allowed_case,
         error_on_send_audit_log_case,

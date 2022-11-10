@@ -1,3 +1,4 @@
+from copy import deepcopy
 from regis import RegisResponse
 
 from .validator import UserUpdateData
@@ -40,14 +41,14 @@ class UserReviewModel:
 
     async def get_audit_template_to_update_risk_data(self) -> dict:
         audit_template = {
-            "unique_id": self.unique_id,
-            "score": self.risk_data.risk_score,
-            "rating": self.risk_data.risk_rating.value,
-            "approval": self.risk_data.risk_approval,
-            "validations": self.risk_data.risk_validations.to_dict(),
+            "unique_id": deepcopy(self.unique_id),
+            "score": deepcopy(self.risk_data.risk_score),
+            "rating": deepcopy(self.risk_data.risk_rating.value),
+            "approval": deepcopy(self.risk_data.risk_approval),
+            "validations": deepcopy(self.risk_data.risk_validations.to_dict()),
         }
         if not audit_template["approval"]:
-            audit_template.update({"user_data": self.new_user_registration_data})
+            audit_template.update({"user_data": deepcopy(self.new_user_registration_data)})
         return audit_template
 
     async def get_new_user_data(self) -> dict:

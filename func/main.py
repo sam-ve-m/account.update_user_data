@@ -3,6 +3,7 @@ from http import HTTPStatus
 from etria_logger import Gladsheim
 import flask
 
+from func.src.domain.thebes_answer.model import ThebesAnswer
 from src.domain.enums.code import InternalCode
 from src.domain.exceptions.exceptions import (
     ErrorOnDecodeJwt,
@@ -20,7 +21,8 @@ from src.domain.exceptions.exceptions import (
     HighRiskActivityNotAllowed,
     OnboardingStepsStatusCodeNotOk,
     InvalidOnboardingCurrentStep,
-    CriticalRiskClientNotAllowed,
+    ErrorOnGetAccountBrIsBlocked,
+    BrAccountIsBlocked
 )
 from src.domain.response.model import ResponseModel
 from src.domain.user_review.validator import UserUpdateData
@@ -35,13 +37,14 @@ async def update_user_data() -> flask.Response:
     try:
         raw_payload = flask.request.json
         payload_validated = UserUpdateData(**raw_payload)
-        unique_id = await JwtService.decode_jwt_and_get_unique_id(jwt=jwt)
+        jwt_data = await JwtService.decode_jwt(jwt=jwt)
+        thebes_answer = ThebesAnswer(jwt_data=jwt_data)
         await UserEnumerateService(
             payload_validated=payload_validated
         ).validate_enumerate_params()
         await UserReviewDataService.check_if_able_to_update(payload_validated, jwt)
         await UserReviewDataService.update_user_data(
-            unique_id=unique_id, payload_validated=payload_validated
+            unique_id=thebes_answer.unique_id, payload_validated=payload_validated
         )
         response = ResponseModel(
             success=True,
@@ -59,7 +62,7 @@ async def update_user_data() -> flask.Response:
         ).build_http_response(status=HTTPStatus.UNAUTHORIZED)
         return response
 
-    except ErrorOnGetUniqueId as ex:
+    except (ErrorOnGetUniqueId, ErrorOnGetAccountBrIsBlocked) as ex:
         Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
             success=False,
@@ -108,6 +111,15 @@ async def update_user_data() -> flask.Response:
             code=InternalCode.ONBOARDING_STEP_INCORRECT,
             message="Invalid Onboarding Step",
         ).build_http_response(status=HTTPStatus.BAD_REQUEST)
+        return response
+
+    except BrAccountIsBlocked as ex:
+        Gladsheim.error(error=ex, message=ex.msg)
+        response = ResponseModel(
+            success=False,
+            code=InternalCode.ACCOUNT_BR_IS_BLOCKED,
+            message="Account br is blocked",
+        ).build_http_response(status=HTTPStatus.UNAUTHORIZED)
         return response
 
     except (

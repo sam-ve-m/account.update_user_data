@@ -77,3 +77,11 @@ class OnboardingStepsStatusCodeNotOk(Exception):
 
 class InvalidOnboardingCurrentStep(Exception):
     msg = "Jormungandr-Onboarding::validators::Ivalid Step: Invalid user step, it must have be finished"
+
+
+class ErrorOnGetAccountBrIsBlocked(Exception):
+    msg = "Jormungandr-Onboarding::get_account_br_is_blocked::Account Br Is Blocker"
+
+
+class BrAccountIsBlocked(Exception):
+    msg = "Jormungandr-Onboarding::validators::Br Account: Brazilian account is blocked"

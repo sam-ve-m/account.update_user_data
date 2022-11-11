@@ -203,8 +203,15 @@ async def test_get_nationalities(option):
     assert result == expected_result
 
 
-def test_get_patrimony_and_income():
+def test_get_patrimony():
     user_data = deepcopy(user_data_dummy)
     model = UserEnumerateDataModel(UserUpdateData(**user_data))
-    response = model.get_patrimony_and_income()
-    assert response == (1000, 1000)
+    response = model.get_patrimony()
+    assert response == 1000
+
+
+def test_get_income():
+    user_data = deepcopy(user_data_dummy)
+    model = UserEnumerateDataModel(UserUpdateData(**user_data))
+    response = model.get_income()
+    assert response == 1000

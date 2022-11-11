@@ -84,8 +84,10 @@ class UserEnumerateDataModel:
                 return
         return parent_value
 
-    def get_patrimony_and_income(self) -> tuple:
+    def get_patrimony(self) -> tuple:
         patrimony = self.get_value("personal.patrimony.value")
-        income = self.get_value("personal.income.value")
-        return patrimony, income
+        return patrimony
 
+    def get_income(self) -> tuple:
+        income = self.get_value("personal.income.value")
+        return income

@@ -51,22 +51,20 @@ class UserEnumerateService:
             unique_id: str
     ):
         user = await UserRepository.get_user(unique_id=unique_id)
-        maps = {
-            0: user['assets']['patrimony'],
-            1: user['assets']['income']
-        }
-        financial_information = user_enumerate_model.get_patrimony_and_income()
-        financial_capacity = 0
-        positions = 0
-        for item in financial_information:
-            value = item
-            if item is None:
-                value = maps.get(positions)
-            financial_capacity += value
-            positions += 1
+
+        patrimony = user_enumerate_model.get_patrimony()
+        if not patrimony:
+            patrimony = user['assets']['patrimony']
+
+        income = user_enumerate_model.get_income()
+        if not income:
+            income = user['assets']['income']
+
+        financial_capacity = patrimony + income
 
         if financial_capacity < 1000:
             raise FinancialCapacityNotValid()
+        return
 
     @staticmethod
     async def _validate_activity(activity_code: int):

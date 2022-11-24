@@ -26,7 +26,7 @@ async def test_get_audit_template_to_update_risk_data_when_is_not_approved():
             is_pep_related=True,
         ),
     )
-    model_stub.add_risk_data(risk_data=risk_data_stub)
+    model_stub.add_risk_data(risk_data=risk_data_stub, risk_rating_changed=False)
     result = await model_stub.get_audit_template_to_update_risk_data()
     expected_result = {
         "unique_id": model_stub.unique_id,
@@ -60,7 +60,7 @@ async def test_get_audit_template_to_update_risk_data_when_is_approved():
             is_pep_related=True,
         ),
     )
-    model_stub.add_risk_data(risk_data=risk_data_stub)
+    model_stub.add_risk_data(risk_data=risk_data_stub, risk_rating_changed=False)
     result = await model_stub.get_audit_template_to_update_risk_data()
     expected_result = {
         "unique_id": model_stub.unique_id,

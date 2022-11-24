@@ -10,6 +10,7 @@ from func.src.domain.exceptions.exceptions import (
     ErrorToUpdateUser,
     InvalidOnboardingCurrentStep,
     FailedToGetData,
+    InconsistentUserData,
 )
 from func.src.services.user_review import UserReviewDataService
 from func.src.transports.onboarding_steps.transport import OnboardingSteps
@@ -84,7 +85,19 @@ async def test_when_update_user_successfully_then_return_true(mock_update_user):
     result = await UserReviewDataService._update_user(
         unique_id=stub_unique_id, new_user_registration_data=stub_user_from_database
     )
-    assert result is None
+    mock_update_user.assert_called_once()
+
+
+@pytest.mark.asyncio
+@patch(
+    "func.src.services.user_review.UserRepository.update_user",
+    return_value=stub_user_updated,
+)
+async def test__update_user_when_user_has_inconsistent_data(mock_update_user):
+    with pytest.raises(InconsistentUserData):
+        result = await UserReviewDataService._update_user(
+            unique_id=stub_unique_id, new_user_registration_data={}
+        )
 
 
 @pytest.mark.asyncio

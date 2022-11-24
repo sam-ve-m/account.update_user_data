@@ -25,8 +25,9 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     ErrorOnSendAuditLog,
                     ErrorToUpdateUser,
                     ErrorOnDecodeJwt,
-                    InvalidOnboardingCurrentStep, InconsistentUserData,
-)
+                    InvalidOnboardingCurrentStep,
+                    InconsistentUserData,
+                )
                 from src.services.user_review import UserReviewDataService
 
 error_on_decode_jwt_case = (
@@ -122,7 +123,7 @@ exception_case = (
         value_error_case,
         exception_case,
         invalid_onboarding_step_case,
-        inconsistent_user_data_case
+        inconsistent_user_data_case,
     ],
 )
 @patch.object(UserEnumerateService, "validate_enumerate_params")

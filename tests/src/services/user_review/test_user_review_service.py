@@ -176,7 +176,8 @@ async def test_check_if_able_to_update_us_with_warning(mocked_logger, mocked_tra
     Regis,
     "rate_client_risk",
 )
-async def test_rate_client_risk(rate_client_risk, audit_log):
+@patch.object(Gladsheim, "warning")
+async def test_rate_client_risk(mock_warning, rate_client_risk, audit_log):
     risk_data_stub = RegisResponse(
         risk_score=1,
         risk_rating=RiskRatings.LOW_RISK,
@@ -191,7 +192,14 @@ async def test_rate_client_risk(rate_client_risk, audit_log):
     )
     rate_client_risk.return_value = risk_data_stub
     result = await UserReviewDataService.rate_client_risk(stub_user_review_model)
-    assert rate_client_risk.called
+    mock_warning.assert_not_called()
+    rate_client_risk.assert_called_with(
+        patrimony=500000.0,
+        address_city=5150,
+        profession=155,
+        is_pep=False,
+        is_pep_related=False,
+    )
 
 
 @pytest.mark.asyncio

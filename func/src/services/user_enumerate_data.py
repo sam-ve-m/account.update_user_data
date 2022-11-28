@@ -5,16 +5,19 @@ from ..domain.exceptions.exceptions import (
     InvalidState,
     InvalidCity,
     InvalidActivity,
+    FinancialCapacityNotValid
 )
 from ..domain.user_enumerate.model import UserEnumerateDataModel
 from ..domain.user_review.validator import UserUpdateData
+from ..repositories.mongo_db.user.repository import UserRepository
 from ..repositories.oracle.repository import EnumerateRepository
 
 from typing import List
 
 
 class UserEnumerateService:
-    def __init__(self, payload_validated: UserUpdateData):
+    def __init__(self, payload_validated: UserUpdateData, unique_id: str):
+        self.unique_id = unique_id
         self.user_enumerate_model = UserEnumerateDataModel(
             payload_validated=payload_validated
         )
@@ -38,6 +41,30 @@ class UserEnumerateService:
         await self._validate_combination_place(
             combination_place=birth_place_combination
         )
+        await self._validate_financial_capacity(
+            user_enumerate_model=self.user_enumerate_model, unique_id=self.unique_id
+        )
+
+    @staticmethod
+    async def _validate_financial_capacity(
+            user_enumerate_model: UserEnumerateDataModel,
+            unique_id: str
+    ):
+        user = await UserRepository.get_user(unique_id=unique_id)
+
+        patrimony = user_enumerate_model.get_patrimony()
+        if not patrimony:
+            patrimony = user['assets']['patrimony']
+
+        income = user_enumerate_model.get_income()
+        if not income:
+            income = user['assets']['income']
+
+        financial_capacity = patrimony + income
+
+        if financial_capacity < 1000:
+            raise FinancialCapacityNotValid()
+        return
 
     @staticmethod
     async def _validate_activity(activity_code: int):

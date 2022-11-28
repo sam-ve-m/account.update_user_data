@@ -232,7 +232,7 @@ class IssuerSource(Source):
     value: str
 
 
-char_with_space = "[a-zA-Z\sáéíóúãẽĩõũâêîôûÁÉÍÓÚÃẼĨÕŨÂÊÎÔÛç]"
+char_with_space = r"[a-zA-Z\sáéíóúãẽĩõũâêîôûÁÉÍÓÚÃẼĨÕŨÂÊÎÔÛç]"
 char_without_space = "[a-zA-ZáéíóúãẽĩõũâêîôûÁÉÍÓÚÃẼĨÕŨÂÊÎÔÛç]"
 name_regex = rf"^{char_without_space}+\s{char_without_space}{char_with_space}*$"
 

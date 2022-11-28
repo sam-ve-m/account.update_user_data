@@ -17,6 +17,14 @@ user_data_dummy = {
             "source": "app",
             "value": [{"country": "USA", "tax_number": "132"}],
         },
+        "patrimony": {
+            "source": "app",
+            "value": 1000
+        },
+        "income": {
+            "source": "app",
+            "value": 1000
+        }
     },
     "marital": {
         "status": {"source": "app", "value": 1},
@@ -193,3 +201,17 @@ async def test_get_nationalities(option):
     model = UserEnumerateDataModel(UserUpdateData(**user_data))
     result = await model.get_nationalities()
     assert result == expected_result
+
+
+def test_get_patrimony():
+    user_data = deepcopy(user_data_dummy)
+    model = UserEnumerateDataModel(UserUpdateData(**user_data))
+    response = model.get_patrimony()
+    assert response == 1000
+
+
+def test_get_income():
+    user_data = deepcopy(user_data_dummy)
+    model = UserEnumerateDataModel(UserUpdateData(**user_data))
+    response = model.get_income()
+    assert response == 1000

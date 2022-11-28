@@ -1,4 +1,3 @@
-# PROJECT IMPORTS
 import logging.config
 from http import HTTPStatus
 from unittest.mock import patch, MagicMock
@@ -6,7 +5,6 @@ from unittest.mock import patch, MagicMock
 import flask
 import pytest
 from decouple import RepositoryEnv, Config
-
 
 with patch.object(RepositoryEnv, "__init__", return_value=None):
     with patch.object(Config, "__init__", return_value=None):
@@ -28,6 +26,7 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     ErrorToUpdateUser,
                     ErrorOnDecodeJwt,
                     InvalidOnboardingCurrentStep,
+                    InconsistentUserData,
                 )
                 from src.services.user_review import UserReviewDataService
 
@@ -87,6 +86,13 @@ error_on_update_user_case = (
     "Unexpected error occurred",
     HTTPStatus.INTERNAL_SERVER_ERROR,
 )
+inconsistent_user_data_case = (
+    InconsistentUserData("dummy"),
+    InconsistentUserData.msg,
+    InternalCode.INTERNAL_SERVER_ERROR,
+    "User data is inconsistent",
+    HTTPStatus.INTERNAL_SERVER_ERROR,
+)
 value_error_case = (
     ValueError("dummy"),
     "dummy",
@@ -117,12 +123,13 @@ exception_case = (
         value_error_case,
         exception_case,
         invalid_onboarding_step_case,
+        inconsistent_user_data_case,
     ],
 )
 @patch.object(UserEnumerateService, "validate_enumerate_params")
 @patch.object(UserReviewDataService, "update_user_data")
 @patch.object(Gladsheim, "error")
-@patch.object(JwtService, "decode_jwt_and_get_unique_id")
+@patch.object(JwtService, "decode_jwt")
 @patch.object(ResponseModel, "__init__", return_value=None)
 @patch.object(UserUpdateData, "__init__", return_value=None)
 @patch.object(ResponseModel, "build_http_response")
@@ -157,7 +164,7 @@ dummy_response = "response"
 
 @pytest.mark.asyncio
 @patch.object(Gladsheim, "error")
-@patch.object(JwtService, "decode_jwt_and_get_unique_id")
+@patch.object(JwtService, "decode_jwt", return_value={"user": {"unique_id": "id"}})
 @patch.object(UserEnumerateService, "__init__", return_value=None)
 @patch.object(UserEnumerateService, "validate_enumerate_params")
 @patch.object(UserReviewDataService, "update_user_data")

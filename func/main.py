@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
-from etria_logger import Gladsheim
 import flask
+from etria_logger import Gladsheim
 
 from func.src.domain.thebes_answer.model import ThebesAnswer
 from src.domain.enums.code import InternalCode
@@ -24,7 +24,8 @@ from src.domain.exceptions.exceptions import (
     CriticalRiskClientNotAllowed,
     FinancialCapacityNotValid,
     ErrorOnGetAccountBrIsBlocked,
-    BrAccountIsBlocked
+    BrAccountIsBlocked,
+    InconsistentUserData,
 )
 from src.domain.response.model import ResponseModel
 from src.domain.user_review.validator import UserUpdateData
@@ -44,7 +45,9 @@ async def update_user_data() -> flask.Response:
         await UserEnumerateService(
             payload_validated=payload_validated, unique_id=unique_id
         ).validate_enumerate_params()
-        await UserReviewDataService.check_if_able_to_update(payload_validated, jwt)
+        await UserReviewDataService.check_if_able_to_update(
+            payload_validated, thebes_answer, jwt
+        )
         await UserReviewDataService.update_user_data(
             unique_id=thebes_answer.unique_id, payload_validated=payload_validated
         )
@@ -141,6 +144,15 @@ async def update_user_data() -> flask.Response:
         Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
             success=False, code=InternalCode.INTERNAL_SERVER_ERROR, message=msg_error
+        ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
+        return response
+
+    except InconsistentUserData as ex:
+        Gladsheim.error(error=ex, message=ex.msg)
+        response = ResponseModel(
+            success=False,
+            code=InternalCode.INTERNAL_SERVER_ERROR,
+            message="User data is inconsistent",
         ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
         return response
 

@@ -4,16 +4,17 @@ import pytest
 from etria_logger import Gladsheim
 from regis import Regis, RiskValidations, RiskRatings, RegisResponse
 
+from func.src.domain.enums.user_review import UserOnboardingStep
 from func.src.domain.exceptions.exceptions import (
     UserUniqueIdNotExists,
     ErrorToUpdateUser,
     InvalidOnboardingCurrentStep,
     FailedToGetData,
-    CriticalRiskClientNotAllowed,
+    InconsistentUserData,
 )
 from func.src.services.user_review import UserReviewDataService
-from func.src.domain.enums.user_review import UserOnboardingStep
 from func.src.transports.onboarding_steps.transport import OnboardingSteps
+from src.domain.thebes_answer.model import ThebesAnswer
 from tests.src.services.user_review.stubs import (
     stub_unique_id,
     stub_payload_validated,
@@ -82,9 +83,21 @@ async def test_when_apply_rules_successfully_then_return_true(
 )
 async def test_when_update_user_successfully_then_return_true(mock_update_user):
     result = await UserReviewDataService._update_user(
-        unique_id=stub_unique_id, new_user_registration_data={}
+        unique_id=stub_unique_id, new_user_registration_data=stub_user_from_database
     )
-    assert result is None
+    mock_update_user.assert_called_once()
+
+
+@pytest.mark.asyncio
+@patch(
+    "func.src.services.user_review.UserRepository.update_user",
+    return_value=stub_user_updated,
+)
+async def test__update_user_when_user_has_inconsistent_data(mock_update_user):
+    with pytest.raises(InconsistentUserData):
+        result = await UserReviewDataService._update_user(
+            unique_id=stub_unique_id, new_user_registration_data={}
+        )
 
 
 @pytest.mark.asyncio
@@ -95,7 +108,7 @@ async def test_when_update_user_successfully_then_return_true(mock_update_user):
 async def test_when_failure_to_update_user_then_raises(mock_update_user):
     with pytest.raises(ErrorToUpdateUser):
         await UserReviewDataService._update_user(
-            unique_id=stub_unique_id, new_user_registration_data={}
+            unique_id=stub_unique_id, new_user_registration_data=stub_user_from_database
         )
 
 
@@ -110,7 +123,9 @@ async def test_check_if_able_to_update_only_br(
     mocked_br_validation,
 ):
     dummy_value.external_exchange_account_us = True
-    await UserReviewDataService.check_if_able_to_update(dummy_value, dummy_value)
+    await UserReviewDataService.check_if_able_to_update(
+        dummy_value, dummy_value, dummy_value
+    )
     mocked_br_validation.assert_called_once_with(dummy_value)
     mocked_us_validation.assert_called_once_with(dummy_value)
 
@@ -123,7 +138,9 @@ async def test_check_if_able_to_update_br_and_us(
     mocked_br_validation,
 ):
     dummy_value.external_exchange_account_us = False
-    await UserReviewDataService.check_if_able_to_update(dummy_value, dummy_value)
+    await UserReviewDataService.check_if_able_to_update(
+        dummy_value, dummy_value, dummy_value
+    )
     mocked_br_validation.assert_called_once_with(dummy_value)
     mocked_us_validation.assert_not_called()
 
@@ -209,7 +226,9 @@ async def test_rate_client_risk(mock_warning, rate_client_risk, audit_log):
     Regis,
     "rate_client_risk",
 )
-async def test_rate_client_risk_when_risk_is_not_aprroved(rate_client_risk, audit_log, etria_warning):
+async def test_rate_client_risk_when_risk_is_not_aprroved(
+    rate_client_risk, audit_log, etria_warning
+):
     risk_data_stub = RegisResponse(
         risk_score=19,
         risk_rating=RiskRatings.CRITICAL_RISK,
@@ -223,7 +242,9 @@ async def test_rate_client_risk_when_risk_is_not_aprroved(rate_client_risk, audi
         ),
     )
     rate_client_risk.return_value = risk_data_stub
-    result = await UserReviewDataService.rate_client_risk(stub_user_review_model)
+    result = await UserReviewDataService.rate_client_risk(
+        stub_user_review_model, stub_user_from_database
+    )
     assert etria_warning.called
     assert rate_client_risk.called
 
@@ -237,5 +258,7 @@ async def test_rate_client_risk_when_risk_is_not_aprroved(rate_client_risk, audi
 async def test_rate_client_risk_when_exception_happens(rate_client_risk, audit_log):
     rate_client_risk.side_effect = Exception()
     with pytest.raises(FailedToGetData):
-        result = await UserReviewDataService.rate_client_risk(stub_user_review_model)
+        result = await UserReviewDataService.rate_client_risk(
+            stub_user_review_model, {}
+        )
     assert rate_client_risk.called

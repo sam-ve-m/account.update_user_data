@@ -473,6 +473,10 @@ stub_user_from_database = {
     "birth_place_city": 5150,
     "birth_place_country": "BRA",
     "birth_place_state": "SP",
+    "record_date_control": {
+        "registry_updates": {"last_registration_data_update": 0},
+        "current_pld_risk_rating_defined_in": 0,
+    },
 }
 
 

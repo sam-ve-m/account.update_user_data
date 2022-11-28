@@ -52,9 +52,7 @@ class UserEnumerateDataModel:
         if not tax_residences:
             return
         tax_residences_list = tax_residences["value"]
-        countries = [
-            tax_residence["country"] for tax_residence in tax_residences_list
-        ]
+        countries = [tax_residence["country"] for tax_residence in tax_residences_list]
         return countries
 
     async def get_document_state(self) -> Optional[str]:

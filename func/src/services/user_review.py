@@ -8,8 +8,8 @@ from ..domain.exceptions.exceptions import (
     UserUniqueIdNotExists,
     ErrorToUpdateUser,
     InvalidOnboardingCurrentStep,
-    CriticalRiskClientNotAllowed,
-    FailedToGetData, BrAccountIsBlocked,
+    FailedToGetData,
+    InconsistentUserData,
 )
 from ..domain.thebes_answer.model import ThebesAnswer
 from ..domain.user_review.model import UserReviewModel
@@ -25,13 +25,13 @@ from ..transports.onboarding_steps.transport import OnboardingSteps
 
 class UserReviewDataService:
     @staticmethod
-    async def check_if_able_to_update(payload_validated: UserUpdateData, thebes_answer: ThebesAnswer, jwt: str):
+    async def check_if_able_to_update(
+        payload_validated: UserUpdateData, thebes_answer: ThebesAnswer, jwt: str
+    ):
         thebes_answer.check_if_account_br_is_blocked()
         await UserReviewDataService._check_if_able_to_update_br(jwt)
         if payload_validated.external_exchange_account_us:
             await UserReviewDataService._check_if_able_to_update_us(jwt)
-
-
 
     @staticmethod
     async def _check_if_able_to_update_br(jwt: str):
@@ -56,16 +56,17 @@ class UserReviewDataService:
             raise InvalidOnboardingCurrentStep()
 
     @staticmethod
-    async def rate_client_risk(user_review_model: UserReviewModel):
-        user_data = user_review_model.new_user_registration_data
+    async def rate_client_risk(user_review_model: UserReviewModel, old_user_data: dict):
+        new_user_data = user_review_model.new_user_registration_data
+        current_pld_rating = old_user_data.get("pld", {}).get("rating")
         try:
             regis_response: RegisResponse = await Regis.rate_client_risk(
-                patrimony=user_data["assets"]["patrimony"],
-                address_city=user_data["address"]["city"],
-                profession=user_data["occupation"]["activity"],
-                is_pep=bool(user_data.get("is_politically_exposed_person")),
+                patrimony=new_user_data["assets"]["patrimony"],
+                address_city=new_user_data["address"]["city"],
+                profession=new_user_data["occupation"]["activity"],
+                is_pep=bool(new_user_data.get("is_politically_exposed_person")),
                 is_pep_related=bool(
-                    user_data.get("is_correlated_to_politically_exposed_person")
+                    new_user_data.get("is_correlated_to_politically_exposed_person")
                 ),
             )
         except Exception as error:
@@ -80,7 +81,10 @@ class UserReviewDataService:
             )
             Gladsheim.warning(message=message)
 
-        user_review_model.add_risk_data(risk_data=regis_response)
+        risk_rating_changed = current_pld_rating != regis_response.risk_rating.value
+        user_review_model.add_risk_data(
+            risk_data=regis_response, risk_rating_changed=risk_rating_changed
+        )
 
         await Audit.record_message_log_to_rate_client_risk(
             user_review_model=user_review_model
@@ -105,7 +109,7 @@ class UserReviewDataService:
             new_user_registration_data=new_user_registration_data,
         )
 
-        await cls.rate_client_risk(user_review_model)
+        await cls.rate_client_risk(user_review_model, user_data)
         await Audit.record_message_log_to_update_registration_data(
             user_review_model=user_review_model
         )
@@ -127,15 +131,12 @@ class UserReviewDataService:
 
     @staticmethod
     async def _update_user(unique_id: str, new_user_registration_data: dict):
-        new_user_registration_data.update(
-            {
-                "record_date_control": {
-                    "registry_updates": {
-                        "last_registration_data_update": datetime.utcnow(),
-                    }
-                }
-            }
-        )
+        try:
+            new_user_registration_data["record_date_control"]["registry_updates"][
+                "last_registration_data_update"
+            ] = datetime.utcnow()
+        except KeyError:
+            raise InconsistentUserData()
         user_updated = await UserRepository.update_user(
             unique_id=unique_id, new_user_registration_data=new_user_registration_data
         )

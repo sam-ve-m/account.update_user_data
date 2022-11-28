@@ -45,7 +45,6 @@ class Audit:
         partition = QueueTypes.USER_UPDATE_RISK_DATA
         topic = config("PERSEPHONE_TOPIC_USER")
         schema_name = config("PERSEPHONE_USER_PLD_SCHEMA")
-        return True  ## TODO: REMOVE!!!
         (
             success,
             status_sent_to_persephone,

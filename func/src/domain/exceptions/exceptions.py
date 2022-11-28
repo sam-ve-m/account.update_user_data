@@ -84,8 +84,12 @@ class InvalidOnboardingCurrentStep(Exception):
 
 
 class ErrorOnGetAccountBrIsBlocked(Exception):
-    msg = "Jormungandr-Onboarding::get_account_br_is_blocked::Account Br Is Blocker"
+    msg = "Jormungandr-Onboarding::get_account_br_is_blocked::Account Br Is Blocked"
 
 
 class BrAccountIsBlocked(Exception):
     msg = "Jormungandr-Onboarding::validators::Br Account: Brazilian account is blocked"
+
+
+class InconsistentUserData(Exception):
+    msg = "Jormungandr-Onboarding::service::User data is inconsistent"

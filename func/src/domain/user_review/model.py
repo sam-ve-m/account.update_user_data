@@ -5,6 +5,7 @@ from regis import RegisResponse
 
 from .validator import UserUpdateData
 from ..exceptions.exceptions import InconsistentUserData
+from ..models.device_info import DeviceInfo
 
 
 class UserReviewModel:
@@ -14,6 +15,7 @@ class UserReviewModel:
         unique_id: str,
         modified_register_data: dict,
         new_user_registration_data: dict,
+        device_info: DeviceInfo,
         risk_data: RegisResponse = None,
         risk_rating_changed: bool = None,
     ):
@@ -21,6 +23,7 @@ class UserReviewModel:
         self.unique_id = unique_id
         self.modified_register_data = modified_register_data
         self.new_user_registration_data = new_user_registration_data
+        self.device_info = device_info
         self.risk_data = risk_data
         self.risk_rating_changed = risk_rating_changed
 
@@ -49,6 +52,8 @@ class UserReviewModel:
             "unique_id": self.unique_id,
             "modified_register_data": self.modified_register_data,
             "update_customer_registration_data": self.user_review_data,
+            "device_info": self.device_info.device_info,
+            "device_id": self.device_info.device_id,
         }
         return audit_template
 

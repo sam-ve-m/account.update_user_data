@@ -22,6 +22,7 @@ from tests.src.services.user_review.stubs import (
     stub_user_updated,
     stub_user_not_updated,
     stub_user_review_model,
+    stub_device_info,
 )
 
 
@@ -70,7 +71,9 @@ async def test_when_apply_rules_successfully_then_return_true(
     iara_mock_dw,
 ):
     result = await UserReviewDataService.update_user_data(
-        unique_id=stub_unique_id, payload_validated=stub_payload_validated
+        unique_id=stub_unique_id,
+        payload_validated=stub_payload_validated,
+        device_info=stub_device_info,
     )
 
     assert result is None

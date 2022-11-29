@@ -11,6 +11,7 @@ from ..domain.exceptions.exceptions import (
     FailedToGetData,
     InconsistentUserData,
 )
+from ..domain.models.device_info import DeviceInfo
 from ..domain.thebes_answer.model import ThebesAnswer
 from ..domain.user_review.model import UserReviewModel
 from ..domain.user_review.validator import UserUpdateData
@@ -92,7 +93,9 @@ class UserReviewDataService:
         user_review_model.update_new_data_with_risk_data()
 
     @classmethod
-    async def update_user_data(cls, unique_id: str, payload_validated: UserUpdateData):
+    async def update_user_data(
+        cls, unique_id: str, payload_validated: UserUpdateData, device_info: DeviceInfo
+    ):
         user_data = await UserReviewDataService._get_user_data(unique_id=unique_id)
         (
             new_user_registration_data,
@@ -107,6 +110,7 @@ class UserReviewDataService:
             unique_id=unique_id,
             modified_register_data=modified_register_data,
             new_user_registration_data=new_user_registration_data,
+            device_info=device_info,
         )
 
         await cls.rate_client_risk(user_review_model, user_data)

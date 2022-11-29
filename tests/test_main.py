@@ -27,7 +27,7 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     ErrorOnDecodeJwt,
                     InvalidOnboardingCurrentStep,
                     InconsistentUserData,
-                    FinancialCapacityNotValid
+                    FinancialCapacityNotValid,
                 )
                 from src.services.user_review import UserReviewDataService
 

@@ -5,7 +5,7 @@ from ..domain.exceptions.exceptions import (
     InvalidState,
     InvalidCity,
     InvalidActivity,
-    FinancialCapacityNotValid
+    FinancialCapacityNotValid,
 )
 from ..domain.user_enumerate.model import UserEnumerateDataModel
 from ..domain.user_review.validator import UserUpdateData
@@ -47,18 +47,17 @@ class UserEnumerateService:
 
     @staticmethod
     async def _validate_financial_capacity(
-            user_enumerate_model: UserEnumerateDataModel,
-            unique_id: str
+        user_enumerate_model: UserEnumerateDataModel, unique_id: str
     ):
         user = await UserRepository.get_user(unique_id=unique_id)
 
         patrimony = user_enumerate_model.get_patrimony()
         if not patrimony:
-            patrimony = user['assets']['patrimony']
+            patrimony = user["assets"]["patrimony"]
 
         income = user_enumerate_model.get_income()
         if not income:
-            income = user['assets']['income']
+            income = user["assets"]["income"]
 
         financial_capacity = patrimony + income
 

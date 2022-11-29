@@ -208,7 +208,9 @@ async def test_rate_client_risk(mock_warning, rate_client_risk, audit_log):
         ),
     )
     rate_client_risk.return_value = risk_data_stub
-    result = await UserReviewDataService.rate_client_risk(stub_user_review_model)
+    result = await UserReviewDataService.rate_client_risk(
+        stub_user_review_model, stub_user_from_database
+    )
     mock_warning.assert_not_called()
     rate_client_risk.assert_called_with(
         patrimony=500000.0,

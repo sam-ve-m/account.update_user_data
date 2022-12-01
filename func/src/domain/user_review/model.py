@@ -64,6 +64,8 @@ class UserReviewModel:
             "rating": deepcopy(self.risk_data.risk_rating.value),
             "approval": deepcopy(self.risk_data.risk_approval),
             "validations": deepcopy(self.risk_data.risk_validations.to_dict()),
+            "device_info": deepcopy(self.device_info.device_info),
+            "device_id": deepcopy(self.device_info.device_id),
         }
         if not audit_template["approval"]:
             audit_template.update(

@@ -17,14 +17,8 @@ user_data_dummy = {
             "source": "app",
             "value": [{"country": "USA", "tax_number": "132"}],
         },
-        "patrimony": {
-            "source": "app",
-            "value": 1000
-        },
-        "income": {
-            "source": "app",
-            "value": 1000
-        }
+        "patrimony": {"source": "app", "value": 1000},
+        "income": {"source": "app", "value": 1000},
     },
     "marital": {
         "status": {"source": "app", "value": 1},

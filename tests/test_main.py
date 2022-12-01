@@ -6,6 +6,8 @@ import flask
 import pytest
 from decouple import RepositoryEnv, Config
 
+from src.transports.device_info.transport import DeviceSecurity
+
 with patch.object(RepositoryEnv, "__init__", return_value=None):
     with patch.object(Config, "__init__", return_value=None):
         with patch.object(Config, "__call__"):
@@ -27,7 +29,9 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     ErrorOnDecodeJwt,
                     InvalidOnboardingCurrentStep,
                     InconsistentUserData,
-                    FinancialCapacityNotValid
+                    FinancialCapacityNotValid,
+                    DeviceInfoRequestFailed,
+                    DeviceInfoNotSupplied,
                 )
                 from src.services.user_review import UserReviewDataService
 
@@ -101,6 +105,20 @@ inconsistent_user_data_case = (
     "User data is inconsistent",
     HTTPStatus.INTERNAL_SERVER_ERROR,
 )
+device_info_request_case = (
+    DeviceInfoRequestFailed(),
+    "Error trying to get device info",
+    InternalCode.INTERNAL_SERVER_ERROR,
+    "Error trying to get device info",
+    HTTPStatus.INTERNAL_SERVER_ERROR,
+)
+no_device_info_case = (
+    DeviceInfoNotSupplied(),
+    "Device info not supplied",
+    InternalCode.INVALID_PARAMS,
+    "Device info not supplied",
+    HTTPStatus.BAD_REQUEST,
+)
 value_error_case = (
     ValueError("dummy"),
     "dummy",
@@ -133,6 +151,8 @@ exception_case = (
         exception_case,
         invalid_onboarding_step_case,
         inconsistent_user_data_case,
+        device_info_request_case,
+        no_device_info_case,
     ],
 )
 @patch.object(UserEnumerateService, "validate_enumerate_params")
@@ -142,7 +162,9 @@ exception_case = (
 @patch.object(ResponseModel, "__init__", return_value=None)
 @patch.object(UserUpdateData, "__init__", return_value=None)
 @patch.object(ResponseModel, "build_http_response")
+@patch.object(DeviceSecurity, "get_device_info")
 async def test_update_user_data_raising_errors(
+    device_info,
     mocked_build_response,
     mocked_model,
     mocked_response_instance,
@@ -181,7 +203,9 @@ dummy_response = "response"
 @patch.object(UserUpdateData, "__init__", return_value=None)
 @patch.object(ResponseModel, "__init__", return_value=None)
 @patch.object(ResponseModel, "build_http_response", return_value=dummy_response)
+@patch.object(DeviceSecurity, "get_device_info")
 async def test_update_user_data(
+    device_info,
     mocked_build_response,
     mocked_response_instance,
     mocked_rules_application,

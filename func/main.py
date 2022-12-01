@@ -21,36 +21,46 @@ from src.domain.exceptions.exceptions import (
     HighRiskActivityNotAllowed,
     OnboardingStepsStatusCodeNotOk,
     InvalidOnboardingCurrentStep,
-    CriticalRiskClientNotAllowed,
     FinancialCapacityNotValid,
     ErrorOnGetAccountBrIsBlocked,
     BrAccountIsBlocked,
     InconsistentUserData,
+    DeviceInfoRequestFailed,
+    DeviceInfoNotSupplied,
 )
 from src.domain.response.model import ResponseModel
 from src.domain.user_review.validator import UserUpdateData
 from src.services.jwt import JwtService
 from src.services.user_enumerate_data import UserEnumerateService
 from src.services.user_review import UserReviewDataService
+from src.transports.device_info.transport import DeviceSecurity
 
 
 async def update_user_data() -> flask.Response:
     msg_error = "Unexpected error occurred"
-    jwt = flask.request.headers.get("x-thebes-answer")
     try:
+        jwt = flask.request.headers.get("x-thebes-answer")
+        encoded_device_info = flask.request.headers.get("x-device-info")
         raw_payload = flask.request.json
+
         payload_validated = UserUpdateData(**raw_payload)
         jwt_data = await JwtService.decode_jwt(jwt=jwt)
         thebes_answer = ThebesAnswer(jwt_data=jwt_data)
+        device_info = await DeviceSecurity.get_device_info(encoded_device_info)
+
         await UserEnumerateService(
-            payload_validated=payload_validated, unique_id=unique_id
+            payload_validated=payload_validated, unique_id=thebes_answer.unique_id
         ).validate_enumerate_params()
         await UserReviewDataService.check_if_able_to_update(
             payload_validated, thebes_answer, jwt
         )
+
         await UserReviewDataService.update_user_data(
-            unique_id=thebes_answer.unique_id, payload_validated=payload_validated
+            unique_id=thebes_answer.unique_id,
+            payload_validated=payload_validated,
+            device_info=device_info,
         )
+
         response = ResponseModel(
             success=True,
             message="User data successfully updated",
@@ -154,6 +164,24 @@ async def update_user_data() -> flask.Response:
             code=InternalCode.INTERNAL_SERVER_ERROR,
             message="User data is inconsistent",
         ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
+        return response
+
+    except DeviceInfoRequestFailed as ex:
+        Gladsheim.error(error=ex, message=ex.msg)
+        response = ResponseModel(
+            success=False,
+            code=InternalCode.INTERNAL_SERVER_ERROR,
+            message="Error trying to get device info",
+        ).build_http_response(status=HTTPStatus.INTERNAL_SERVER_ERROR)
+        return response
+
+    except DeviceInfoNotSupplied as ex:
+        Gladsheim.error(error=ex, message=ex.msg)
+        response = ResponseModel(
+            success=False,
+            code=InternalCode.INVALID_PARAMS,
+            message="Device info not supplied",
+        ).build_http_response(status=HTTPStatus.BAD_REQUEST)
         return response
 
     except ValueError as ex:

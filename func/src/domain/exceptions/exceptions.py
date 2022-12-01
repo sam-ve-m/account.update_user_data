@@ -93,3 +93,11 @@ class BrAccountIsBlocked(Exception):
 
 class InconsistentUserData(Exception):
     msg = "Jormungandr-Onboarding::service::User data is inconsistent"
+
+
+class DeviceInfoRequestFailed(Exception):
+    msg = "Error trying to get device info"
+
+
+class DeviceInfoNotSupplied(Exception):
+    msg = "Device info not supplied"

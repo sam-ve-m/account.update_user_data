@@ -22,6 +22,7 @@ from tests.src.services.user_review.stubs import (
     stub_user_updated,
     stub_user_not_updated,
     stub_user_review_model,
+    stub_device_info,
 )
 
 
@@ -70,7 +71,9 @@ async def test_when_apply_rules_successfully_then_return_true(
     iara_mock_dw,
 ):
     result = await UserReviewDataService.update_user_data(
-        unique_id=stub_unique_id, payload_validated=stub_payload_validated
+        unique_id=stub_unique_id,
+        payload_validated=stub_payload_validated,
+        device_info=stub_device_info,
     )
 
     assert result is None
@@ -208,7 +211,9 @@ async def test_rate_client_risk(mock_warning, rate_client_risk, audit_log):
         ),
     )
     rate_client_risk.return_value = risk_data_stub
-    result = await UserReviewDataService.rate_client_risk(stub_user_review_model)
+    result = await UserReviewDataService.rate_client_risk(
+        stub_user_review_model, stub_user_from_database
+    )
     mock_warning.assert_not_called()
     rate_client_risk.assert_called_with(
         patrimony=500000.0,

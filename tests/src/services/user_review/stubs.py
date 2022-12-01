@@ -7,6 +7,7 @@ from func.src.services.builders.user_registration_update import (
 
 import datetime
 
+from src.domain.models.device_info import DeviceInfo
 
 stub_unique_id = "451baf5a-9cd5-4037-aa17-fbd0fcef66c8"
 
@@ -481,6 +482,7 @@ stub_user_from_database = {
 
 
 stub_payload_validated = UserUpdateData(**stub_payload)
+stub_device_info = DeviceInfo({"precision": 1}, "")
 
 (
     stub_new_registration_data,
@@ -496,6 +498,7 @@ stub_user_review_model = UserReviewModel(
     unique_id=stub_unique_id,
     new_user_registration_data=stub_new_registration_data,
     modified_register_data=stub_modified_register_data,
+    device_info=stub_device_info,
 )
 stub_user_enumerate_model = UserEnumerateDataModel(
     payload_validated=stub_payload_validated

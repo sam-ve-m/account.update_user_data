@@ -3,7 +3,7 @@ from http import HTTPStatus
 import flask
 from etria_logger import Gladsheim
 
-from func.src.domain.thebes_answer.model import ThebesAnswer
+from src.domain.thebes_answer.model import ThebesAnswer
 from src.domain.enums.code import InternalCode
 from src.domain.exceptions.exceptions import (
     ErrorOnDecodeJwt,

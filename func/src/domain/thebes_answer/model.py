@@ -1,4 +1,8 @@
-from src.domain.exceptions.exceptions import ErrorOnGetUniqueId, BrAccountIsBlocked, ErrorOnGetAccountBrIsBlocked
+from src.domain.exceptions.exceptions import (
+    ErrorOnGetUniqueId,
+    BrAccountIsBlocked,
+    ErrorOnGetAccountBrIsBlocked,
+)
 
 
 class ThebesAnswer:
@@ -13,7 +17,9 @@ class ThebesAnswer:
         return unique_id
 
     def check_if_account_br_is_blocked(self):
-        account_br_is_blocked = self.jwt_data.get("user", {}).get("account_br_is_blocked")
+        account_br_is_blocked = self.jwt_data.get("user", {}).get(
+            "account_br_is_blocked"
+        )
         if account_br_is_blocked is None:
             raise ErrorOnGetAccountBrIsBlocked()
 

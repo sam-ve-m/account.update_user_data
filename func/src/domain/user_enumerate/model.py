@@ -52,9 +52,7 @@ class UserEnumerateDataModel:
         if not tax_residences:
             return
         tax_residences_list = tax_residences["value"]
-        countries = [
-            tax_residence["country"] for tax_residence in tax_residences_list
-        ]
+        countries = [tax_residence["country"] for tax_residence in tax_residences_list]
         return countries
 
     async def get_document_state(self) -> Optional[str]:
@@ -83,3 +81,11 @@ class UserEnumerateDataModel:
             if parent_value is None:
                 return
         return parent_value
+
+    def get_patrimony(self) -> tuple:
+        patrimony = self.get_value("personal.patrimony.value")
+        return patrimony
+
+    def get_income(self) -> tuple:
+        income = self.get_value("personal.income.value")
+        return income

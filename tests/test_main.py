@@ -1,4 +1,3 @@
-# PROJECT IMPORTS
 import logging.config
 from http import HTTPStatus
 from unittest.mock import patch, MagicMock
@@ -7,6 +6,7 @@ import flask
 import pytest
 from decouple import RepositoryEnv, Config
 
+from src.transports.device_info.transport import DeviceSecurity
 
 with patch.object(RepositoryEnv, "__init__", return_value=None):
     with patch.object(Config, "__init__", return_value=None):
@@ -28,6 +28,10 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     ErrorToUpdateUser,
                     ErrorOnDecodeJwt,
                     InvalidOnboardingCurrentStep,
+                    InconsistentUserData,
+                    FinancialCapacityNotValid,
+                    DeviceInfoRequestFailed,
+                    DeviceInfoNotSupplied,
                 )
                 from src.services.user_review import UserReviewDataService
 
@@ -50,6 +54,13 @@ user_unique_id_not_exists_case = (
     UserUniqueIdNotExists.msg,
     InternalCode.DATA_NOT_FOUND,
     "There is no user with this unique_id",
+    HTTPStatus.BAD_REQUEST,
+)
+financial_capacity_not_valid_case = (
+    FinancialCapacityNotValid(),
+    FinancialCapacityNotValid.msg,
+    InternalCode.FINANCIAL_CAPACITY_NOT_VALID,
+    "Insufficient financial capacity",
     HTTPStatus.BAD_REQUEST,
 )
 invalid_nationality_case = (
@@ -87,6 +98,27 @@ error_on_update_user_case = (
     "Unexpected error occurred",
     HTTPStatus.INTERNAL_SERVER_ERROR,
 )
+inconsistent_user_data_case = (
+    InconsistentUserData("dummy"),
+    InconsistentUserData.msg,
+    InternalCode.INTERNAL_SERVER_ERROR,
+    "User data is inconsistent",
+    HTTPStatus.INTERNAL_SERVER_ERROR,
+)
+device_info_request_case = (
+    DeviceInfoRequestFailed(),
+    "Error trying to get device info",
+    InternalCode.INTERNAL_SERVER_ERROR,
+    "Error trying to get device info",
+    HTTPStatus.INTERNAL_SERVER_ERROR,
+)
+no_device_info_case = (
+    DeviceInfoNotSupplied(),
+    "Device info not supplied",
+    InternalCode.INVALID_PARAMS,
+    "Device info not supplied",
+    HTTPStatus.BAD_REQUEST,
+)
 value_error_case = (
     ValueError("dummy"),
     "dummy",
@@ -110,6 +142,7 @@ exception_case = (
         error_on_decode_jwt_case,
         error_on_get_unique_id_case,
         user_unique_id_not_exists_case,
+        financial_capacity_not_valid_case,
         invalid_nationality_case,
         high_risk_activity_not_allowed_case,
         error_on_send_audit_log_case,
@@ -117,16 +150,21 @@ exception_case = (
         value_error_case,
         exception_case,
         invalid_onboarding_step_case,
+        inconsistent_user_data_case,
+        device_info_request_case,
+        no_device_info_case,
     ],
 )
 @patch.object(UserEnumerateService, "validate_enumerate_params")
 @patch.object(UserReviewDataService, "update_user_data")
 @patch.object(Gladsheim, "error")
-@patch.object(JwtService, "decode_jwt_and_get_unique_id")
+@patch.object(JwtService, "decode_jwt")
 @patch.object(ResponseModel, "__init__", return_value=None)
 @patch.object(UserUpdateData, "__init__", return_value=None)
 @patch.object(ResponseModel, "build_http_response")
+@patch.object(DeviceSecurity, "get_device_info")
 async def test_update_user_data_raising_errors(
+    device_info,
     mocked_build_response,
     mocked_model,
     mocked_response_instance,
@@ -157,7 +195,7 @@ dummy_response = "response"
 
 @pytest.mark.asyncio
 @patch.object(Gladsheim, "error")
-@patch.object(JwtService, "decode_jwt_and_get_unique_id")
+@patch.object(JwtService, "decode_jwt", return_value={"user": {"unique_id": "id"}})
 @patch.object(UserEnumerateService, "__init__", return_value=None)
 @patch.object(UserEnumerateService, "validate_enumerate_params")
 @patch.object(UserReviewDataService, "update_user_data")
@@ -165,7 +203,9 @@ dummy_response = "response"
 @patch.object(UserUpdateData, "__init__", return_value=None)
 @patch.object(ResponseModel, "__init__", return_value=None)
 @patch.object(ResponseModel, "build_http_response", return_value=dummy_response)
+@patch.object(DeviceSecurity, "get_device_info")
 async def test_update_user_data(
+    device_info,
     mocked_build_response,
     mocked_response_instance,
     mocked_rules_application,

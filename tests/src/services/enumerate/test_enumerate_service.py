@@ -9,10 +9,12 @@ from src.domain.exceptions.exceptions import (
     InvalidActivity,
     InvalidNationality,
     InvalidCountryAcronym,
+    FinancialCapacityNotValid,
 )
 
 
 from src.domain.user_enumerate.model import UserEnumerateDataModel
+from src.repositories.mongo_db.user.repository import UserRepository
 from src.services.user_enumerate_data import UserEnumerateService
 from tests.src.services.user_review.stubs import (
     stub_payload_validated,
@@ -30,13 +32,19 @@ from pytest import fixture
 
 @fixture(scope="function")
 def enumerate_service_missing_some_data():
-    service = UserEnumerateService(payload_validated=stub_payload_validated)
+    service = UserEnumerateService(
+        payload_validated=stub_payload_validated,
+        unique_id="40db7fee-6d60-4d73-824f-1bf87edc4491",
+    )
     return service
 
 
 @fixture(scope="function")
 def enumerate_service():
-    service = UserEnumerateService(payload_validated=stub_payload_validated)
+    service = UserEnumerateService(
+        payload_validated=stub_payload_validated,
+        unique_id="40db7fee-6d60-4d73-824f-1bf87edc4491",
+    )
     return service
 
 
@@ -346,3 +354,125 @@ async def test_when_success_to_validate_enumerate_params_then_return_true(
     assert fake_instance.user_enumerate_model.get_country_tax_residences.called
     assert fake_instance.user_enumerate_model.get_marital_status.called
     assert fake_instance.user_enumerate_model.get_combination_address.called
+
+
+stub_get_user_greater_than_a_thousand_and_two_values = {
+    "assets": {"patrimony": 0, "income": 0}
+}
+
+
+@pytest.mark.asyncio
+@patch.object(UserEnumerateDataModel, "get_patrimony", return_value=500)
+@patch.object(UserEnumerateDataModel, "get_income", return_value=500)
+@patch.object(
+    UserRepository,
+    "get_user",
+    return_value=stub_get_user_greater_than_a_thousand_and_two_values,
+)
+@patch.object(FinancialCapacityNotValid, "__init__")
+async def test__validate_financial_capacity_false_false_false(
+    mock___init__, mock_get_user, mock_get_patrimony, mock_get_income
+):
+    response = await UserEnumerateService._validate_financial_capacity(
+        user_enumerate_model=UserEnumerateDataModel(MagicMock()),
+        unique_id="40db7fee-6d60-4d73-824f-1bf87edc4491",
+    )
+    mock___init__.assert_not_called()
+
+
+stub_get_user_greater_than_a_thousand_and_two_values02 = {
+    "assets": {"patrimony": 500, "income": 0}
+}
+
+
+@pytest.mark.asyncio
+@patch.object(UserEnumerateDataModel, "get_patrimony", return_value=None)
+@patch.object(UserEnumerateDataModel, "get_income", return_value=500)
+@patch.object(
+    UserRepository,
+    "get_user",
+    return_value=stub_get_user_greater_than_a_thousand_and_two_values02,
+)
+@patch.object(FinancialCapacityNotValid, "__init__")
+async def test__validate_financial_capacity_true_false_false(
+    mock___init__, mock_get_user, mock_get_patrimony, mock_get_income
+):
+    response = await UserEnumerateService._validate_financial_capacity(
+        user_enumerate_model=UserEnumerateDataModel(MagicMock()),
+        unique_id="40db7fee-6d60-4d73-824f-1bf87edc4491",
+    )
+    mock___init__.assert_not_called()
+
+
+stub_get_user_greater_than_a_thousand_and_two_values03 = {
+    "assets": {"patrimony": 0, "income": 500}
+}
+
+
+@pytest.mark.asyncio
+@patch.object(UserEnumerateDataModel, "get_patrimony", return_value=500)
+@patch.object(UserEnumerateDataModel, "get_income", return_value=None)
+@patch.object(
+    UserRepository,
+    "get_user",
+    return_value=stub_get_user_greater_than_a_thousand_and_two_values03,
+)
+@patch.object(FinancialCapacityNotValid, "__init__")
+async def test__validate_financial_capacity_false_true_false(
+    mock___init__, mock_get_user, mock_get_patrimony, mock_get_income
+):
+    response = await UserEnumerateService._validate_financial_capacity(
+        user_enumerate_model=UserEnumerateDataModel(MagicMock()),
+        unique_id="40db7fee-6d60-4d73-824f-1bf87edc4491",
+    )
+    mock_get_user["assets"]["patrimony"].assert_not_called()
+    mock___init__.assert_not_called()
+
+
+stub_get_user_greater_than_a_thousand_and_two_values05 = {
+    "assets": {"patrimony": 500, "income": 500}
+}
+
+
+@pytest.mark.asyncio
+@patch.object(UserEnumerateDataModel, "get_patrimony", return_value=None)
+@patch.object(UserEnumerateDataModel, "get_income", return_value=None)
+@patch.object(
+    UserRepository,
+    "get_user",
+    return_value=stub_get_user_greater_than_a_thousand_and_two_values05,
+)
+@patch.object(FinancialCapacityNotValid, "__init__")
+async def test__validate_financial_capacity_true_true_false(
+    mock___init__, mock_get_user, mock_get_patrimony, mock_get_income
+):
+    response = await UserEnumerateService._validate_financial_capacity(
+        user_enumerate_model=UserEnumerateDataModel(MagicMock()),
+        unique_id="40db7fee-6d60-4d73-824f-1bf87edc4491",
+    )
+    mock___init__.assert_not_called()
+
+
+stub_get_user_greater_than_a_thousand_and_two_values01 = {
+    "assets": {"patrimony": 100, "income": 800}
+}
+
+
+@pytest.mark.asyncio
+@patch.object(UserEnumerateDataModel, "get_patrimony", return_value=None)
+@patch.object(UserEnumerateDataModel, "get_income", return_value=None)
+@patch.object(
+    UserRepository,
+    "get_user",
+    return_value=stub_get_user_greater_than_a_thousand_and_two_values01,
+)
+@patch.object(FinancialCapacityNotValid, "__init__")
+async def test__validate_financial_capacity_false_false_true(
+    mock___init__, mock_get_user, mock_get_patrimony, mock_get_income
+):
+    with pytest.raises(Exception):
+        response = await UserEnumerateService._validate_financial_capacity(
+            user_enumerate_model=UserEnumerateDataModel(MagicMock()),
+            unique_id="40db7fee-6d60-4d73-824f-1bf87edc4491",
+        )
+    mock___init__.assert_called()

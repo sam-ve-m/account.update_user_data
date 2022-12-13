@@ -372,7 +372,6 @@ class UserDocumentsDataUpdate(OptionalDataBlock):
     cpf: Optional[CpfSource]
     identity_type: Optional[DocumentTypesSource]
     identity_number: Optional[DocumentNumberSource]
-    expedition_date: Optional[DateSource]
     issuer: Optional[IssuerSource]
     state: Optional[StateSource]
 

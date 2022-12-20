@@ -232,11 +232,6 @@ def test_documents_identity_number_empty():
     fake_instance._update_modified_data.assert_not_called()
 
 
-def test_documents_expedition_date_empty():
-    UpdateCustomerRegistrationBuilder.documents_expedition_date(fake_instance)
-    fake_instance._update_modified_data.assert_not_called()
-
-
 def test_documents_issuer_empty():
     UpdateCustomerRegistrationBuilder.documents_issuer(fake_instance)
     fake_instance._update_modified_data.assert_not_called()
@@ -615,16 +610,6 @@ def test_documents_identity_number():
     UpdateCustomerRegistrationBuilder.documents_identity_number(fake_instance)
     fake_instance._update_modified_data.assert_called_with(
         levels=("identifier_document", "document_data", "number"),
-        old_field=fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value.get.return_value,
-        new_filed=fake_instance._get_new_value.return_value,
-    )
-
-
-def test_documents_expedition_date():
-    fake_instance._get_new_value.return_value = MagicMock()
-    UpdateCustomerRegistrationBuilder.documents_expedition_date(fake_instance)
-    fake_instance._update_modified_data.assert_called_with(
-        levels=("identifier_document", "document_data", "date"),
         old_field=fake_instance._UpdateCustomerRegistrationBuilder__old_personal_data.get.return_value.get.return_value.get.return_value,
         new_filed=fake_instance._get_new_value.return_value,
     )

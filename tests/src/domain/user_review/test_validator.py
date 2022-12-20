@@ -38,7 +38,6 @@ register_dummy = {
         "cpf": {"source": "app", "value": "72772117073"},
         "identity_type": {"source": "app", "value": "CH"},
         "identity_number": {"source": "app", "value": "06713096255"},
-        "expedition_date": {"source": "app", "value": 1600697312},
         "issuer": {"source": "app", "value": "SSP"},
         "state": {"source": "app", "value": "SP"},
     },

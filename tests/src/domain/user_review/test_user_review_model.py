@@ -14,6 +14,7 @@ async def test_when_get_new_user_data_then_remove_pymongo_id():
     assert isinstance(result, dict)
     assert result.get("_id") is None
     assert stub_user_review_model.risk_data is None
+    assert stub_user_review_model.risk_rating_changed is None
 
 
 @pytest.mark.asyncio
@@ -109,6 +110,7 @@ async def test_update_new_data_with_risk_data():
     }
     result = model_stub.update_new_data_with_risk_data()
     assert pld_data_expected == model_stub.new_user_registration_data.get("pld")
+    assert model_stub.new_user_registration_data["record_date_control"]["current_pld_risk_rating_defined_in"] == 0
 
 
 @pytest.mark.asyncio

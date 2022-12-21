@@ -6,6 +6,7 @@ import flask
 import pytest
 from decouple import RepositoryEnv, Config
 
+from src.services.liveness import LivenessService
 from src.transports.device_info.transport import DeviceSecurity
 
 with patch.object(RepositoryEnv, "__init__", return_value=None):
@@ -163,7 +164,9 @@ exception_case = (
 @patch.object(UserUpdateData, "__init__", return_value=None)
 @patch.object(ResponseModel, "build_http_response")
 @patch.object(DeviceSecurity, "get_device_info")
+@patch.object(LivenessService, "validate")
 async def test_update_user_data_raising_errors(
+    mocked_liveness,
     device_info,
     mocked_build_response,
     mocked_model,
@@ -204,7 +207,9 @@ dummy_response = "response"
 @patch.object(ResponseModel, "__init__", return_value=None)
 @patch.object(ResponseModel, "build_http_response", return_value=dummy_response)
 @patch.object(DeviceSecurity, "get_device_info")
+@patch.object(LivenessService, "validate")
 async def test_update_user_data(
+    mocked_liveness,
     device_info,
     mocked_build_response,
     mocked_response_instance,

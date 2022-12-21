@@ -14,6 +14,7 @@ from src.domain.user_review.validator import (
 )
 
 register_dummy = {
+    "liveness": "",
     "personal": {
         "name": {"source": "app", "value": "Rosa Jessica"},
         "nick_name": {"source": "app", "value": "Rosinha"},

@@ -106,8 +106,8 @@ spec:
               value: "https://identityhomolog.acesso.io/oauth2/token"
             - name: KOH_UNICO_URL_LIVENESS
               value: "https://crediariohomolog.acesso.io/lionxhm/services/v3/AcessoService.svc/faces/compare"
-            - name: KOH_REDIS_HOST_URL
-              value: "redis://127.0.0.1:6379"
+            - name: MNEMOSINE_REDIS_HOST
+              value: "redis://bnd:jkl321pqr@172.30.11.235:6379"
             - name: KOH_MONGO_CONNECTION_URL
               value: "mongodb://ebisu:DAlnafcnmmcsa1@172.30.10.75:41000/?authSource=admin&replicaSet=rslionx&readPreference=secondary"
             - name: KOH_MONGODB_DATABASE_NAME

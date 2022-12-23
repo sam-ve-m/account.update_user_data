@@ -101,3 +101,11 @@ class DeviceInfoRequestFailed(Exception):
 
 class DeviceInfoNotSupplied(Exception):
     msg = "Device info not supplied"
+
+
+class LivenessRejected(Exception):
+    msg = "Liveness rejected"
+
+
+class ErrorInLiveness(Exception):
+    msg = "Internal Server Error in Liveness"

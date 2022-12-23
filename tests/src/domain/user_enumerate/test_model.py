@@ -7,6 +7,7 @@ from func.src.domain.user_enumerate.model import UserEnumerateDataModel
 from func.src.domain.user_review.validator import UserUpdateData
 
 user_data_dummy = {
+    "liveness": "",
     "personal": {
         "nationality": {"source": "app", "value": 1},
         "occupation_activity": {"source": "app", "value": 101},

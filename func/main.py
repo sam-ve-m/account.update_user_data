@@ -1,6 +1,8 @@
+import asyncio
 from http import HTTPStatus
 
 import flask
+from decouple import config
 from etria_logger import Gladsheim
 
 from src.domain.thebes_answer.model import ThebesAnswer
@@ -27,10 +29,13 @@ from src.domain.exceptions.exceptions import (
     InconsistentUserData,
     DeviceInfoRequestFailed,
     DeviceInfoNotSupplied,
+    LivenessRejected,
+    ErrorInLiveness,
 )
 from src.domain.response.model import ResponseModel
 from src.domain.user_review.validator import UserUpdateData
 from src.services.jwt import JwtService
+from src.services.liveness import LivenessService
 from src.services.user_enumerate_data import UserEnumerateService
 from src.services.user_review import UserReviewDataService
 from src.transports.device_info.transport import DeviceSecurity
@@ -47,13 +52,20 @@ async def update_user_data() -> flask.Response:
         jwt_data = await JwtService.decode_jwt(jwt=jwt)
         thebes_answer = ThebesAnswer(jwt_data=jwt_data)
         device_info = await DeviceSecurity.get_device_info(encoded_device_info)
-
-        await UserEnumerateService(
-            payload_validated=payload_validated, unique_id=thebes_answer.unique_id
-        ).validate_enumerate_params()
-        await UserReviewDataService.check_if_able_to_update(
-            payload_validated, thebes_answer, jwt
+        validations = (
+            LivenessService.validate(
+                thebes_answer.unique_id,
+                payload_validated,
+                config("KOH_FEATURE_UPDATE_USER_DATA")
+            ),
+            UserEnumerateService(
+                payload_validated=payload_validated, unique_id=thebes_answer.unique_id
+            ).validate_enumerate_params(),
+            UserReviewDataService.check_if_able_to_update(
+                payload_validated, thebes_answer, jwt
+            ),
         )
+        await asyncio.gather(*validations)
 
         await UserReviewDataService.update_user_data(
             unique_id=thebes_answer.unique_id,
@@ -112,6 +124,7 @@ async def update_user_data() -> flask.Response:
         InvalidActivity,
         InvalidMaritalStatus,
         InvalidCountryAcronym,
+        LivenessRejected,
     ) as ex:
         Gladsheim.error(error=ex, message=ex.msg)
         response = ResponseModel(
@@ -149,6 +162,7 @@ async def update_user_data() -> flask.Response:
     except (
         ErrorOnSendAuditLog,
         ErrorToUpdateUser,
+        ErrorInLiveness,
         OnboardingStepsStatusCodeNotOk,
     ) as ex:
         Gladsheim.error(error=ex, message=ex.msg)

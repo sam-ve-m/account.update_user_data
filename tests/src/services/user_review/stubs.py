@@ -12,6 +12,7 @@ from src.domain.models.device_info import DeviceInfo
 stub_unique_id = "451baf5a-9cd5-4037-aa17-fbd0fcef66c8"
 
 stub_payload = {
+    "liveness": "",
     "personal": {
         "name": {"value": "Fulaninho da Silva Sauro", "source": "by_test"},
         "nick_name": {"value": "RAST3", "source": "by_test"},
@@ -67,6 +68,7 @@ stub_payload = {
 }
 
 stub_payload_missing_data = {
+    "liveness": "",
     "personal": {
         "name": {"value": "Fulaninho da Silva Sauro", "source": "by_test"},
         "nick_name": {"value": "RAST3", "source": "by_test"},

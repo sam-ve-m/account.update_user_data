@@ -165,7 +165,9 @@ exception_case = (
 @patch.object(ResponseModel, "build_http_response")
 @patch.object(DeviceSecurity, "get_device_info")
 @patch.object(LivenessService, "validate")
+@patch.object(Config, "__call__")
 async def test_update_user_data_raising_errors(
+    mocked_env,
     mocked_liveness,
     device_info,
     mocked_build_response,
@@ -208,7 +210,9 @@ dummy_response = "response"
 @patch.object(ResponseModel, "build_http_response", return_value=dummy_response)
 @patch.object(DeviceSecurity, "get_device_info")
 @patch.object(LivenessService, "validate")
+@patch.object(Config, "__call__")
 async def test_update_user_data(
+    mocked_env,
     mocked_liveness,
     device_info,
     mocked_build_response,

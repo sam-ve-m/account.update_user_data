@@ -416,4 +416,4 @@ class UserUpdateData(OptionalDataBlock):
     documents: Optional[UserDocumentsDataUpdate]
     address: Optional[UserAddressDataUpdate]
     external_exchange_account_us: Optional[ExternalExchangeAccountUsUpdate]
-    liveness: str
+    liveness: Optional[str]

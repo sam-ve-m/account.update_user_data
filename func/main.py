@@ -2,6 +2,7 @@ import asyncio
 from http import HTTPStatus
 
 import flask
+from decouple import config
 from etria_logger import Gladsheim
 
 from src.domain.thebes_answer.model import ThebesAnswer
@@ -54,7 +55,8 @@ async def update_user_data() -> flask.Response:
         validations = (
             LivenessService.validate(
                 thebes_answer.unique_id,
-                payload_validated
+                payload_validated,
+                config("KOH_FEATURE_UPDATE_USER_DATA")
             ),
             UserEnumerateService(
                 payload_validated=payload_validated, unique_id=thebes_answer.unique_id

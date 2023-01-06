@@ -2,8 +2,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from src.domain.thebes_answer.model import ThebesAnswer
-from src.domain.exceptions.exceptions import ErrorOnGetUniqueId
+from func.src.domain.thebes_answer.model import ThebesAnswer
+from func.src.domain.exceptions.exceptions import ErrorOnGetUniqueId
 
 
 def test_unique_id():

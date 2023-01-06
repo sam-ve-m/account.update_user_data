@@ -6,7 +6,7 @@ from decouple import config
 from etria_logger import Gladsheim
 from httpx import AsyncClient
 
-from src.domain.exceptions.exceptions import OnboardingStepsStatusCodeNotOk
+from func.src.domain.exceptions.exceptions import OnboardingStepsStatusCodeNotOk
 
 
 class OnboardingSteps:

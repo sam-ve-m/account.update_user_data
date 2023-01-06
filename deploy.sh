@@ -1,5 +1,5 @@
 #!/bin/bash
 fission spec init
-fission env create --spec --name user-update-env --image nexus.sigame.com.br/fission-async-cx:0.0.2 --builder nexus.sigame.com.br/fission-builder-3.8:0.0.1
-fission fn create --spec --name user-update-fn --env user-update-env --src "./func/*" --entrypoint main.update_user_data --executortype newdeploy --maxscale 1
-fission route create --spec --name user-update-rt --method PUT --url /account/update_user --function user-update-fn
+fission env create --spec --name acc-data-update-env --image nexus.sigame.com.br/fission-account-update-user-data:0.1.0 --poolsize 0 --version 3 --imagepullsecret "nexus-v3" --spec
+fission fn create --spec --name acc-data-update-fn --env acc-data-update-env --code fission.py --targetcpu 80 --executortype newdeploy --maxscale 3 --requestsperpod 10000 --spec
+fission route create --spec --name acc-data-update-rt --method PUT --url /account/update_user --function acc-data-update-fn

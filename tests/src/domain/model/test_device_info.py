@@ -1,6 +1,6 @@
 from decouple import Config
 from unittest.mock import MagicMock, patch
-from src.domain.models.device_info import DeviceInfo
+from func.src.domain.models.device_info import DeviceInfo
 
 
 @patch.object(Config, "__call__")

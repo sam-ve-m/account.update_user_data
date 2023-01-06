@@ -7,7 +7,7 @@ from func.src.services.builders.user_registration_update import (
 
 import datetime
 
-from src.domain.models.device_info import DeviceInfo
+from func.src.domain.models.device_info import DeviceInfo
 
 stub_unique_id = "451baf5a-9cd5-4037-aa17-fbd0fcef66c8"
 

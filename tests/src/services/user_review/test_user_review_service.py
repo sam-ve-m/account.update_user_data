@@ -14,7 +14,7 @@ from func.src.domain.exceptions.exceptions import (
 )
 from func.src.services.user_review import UserReviewDataService
 from func.src.transports.onboarding_steps.transport import OnboardingSteps
-from src.domain.thebes_answer.model import ThebesAnswer
+from func.src.domain.thebes_answer.model import ThebesAnswer
 from tests.src.services.user_review.stubs import (
     stub_unique_id,
     stub_payload_validated,

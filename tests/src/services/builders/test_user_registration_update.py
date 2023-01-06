@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.services.builders.user_registration_update import (
+from func.src.services.builders.user_registration_update import (
     UpdateCustomerRegistrationBuilder,
 )
 

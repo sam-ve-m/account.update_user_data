@@ -9,8 +9,8 @@ from decouple import config
 from etria_logger import Gladsheim
 from httpx import AsyncClient
 
-from src.domain.exceptions.exceptions import OnboardingStepsStatusCodeNotOk
-from src.transports.onboarding_steps.transport import OnboardingSteps
+from func.src.domain.exceptions.exceptions import OnboardingStepsStatusCodeNotOk
+from func.src.transports.onboarding_steps.transport import OnboardingSteps
 
 
 dummy_value = MagicMock()

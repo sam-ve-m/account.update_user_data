@@ -5,13 +5,13 @@ from typing import Optional, List, Dict, Any
 
 from pydantic import BaseModel, constr, validator, root_validator
 
-from ..enums.employment_position_us import EmploymentPositionUs
-from ..enums.employment_status_us import EmploymentStatusUs
-from ..enums.employment_type_us import EmploymentTypeUs
-from ..enums.high_risk_activity import HighRiskActivity
-from ..enums.time_experience_us import TimeExperienceUs
-from ..exceptions.exceptions import InvalidEmail, HighRiskActivityNotAllowed
-from ...domain.enums.user_review import PersonGender, DocumentTypes
+from func.src.domain.enums.employment_position_us import EmploymentPositionUs
+from func.src.domain.enums.employment_status_us import EmploymentStatusUs
+from func.src.domain.enums.employment_type_us import EmploymentTypeUs
+from func.src.domain.enums.high_risk_activity import HighRiskActivity
+from func.src.domain.enums.time_experience_us import TimeExperienceUs
+from func.src.domain.exceptions.exceptions import InvalidEmail, HighRiskActivityNotAllowed
+from func.src.domain.enums.user_review import PersonGender, DocumentTypes
 
 
 class Source(BaseModel):

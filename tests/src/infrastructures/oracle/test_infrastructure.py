@@ -4,7 +4,7 @@ import cx_Oracle_async
 import pytest
 from decouple import AutoConfig
 
-from src.infrastructures.oracle.infrastrucuture import OracleInfrastructure
+from func.src.infrastructures.oracle.infrastrucuture import OracleInfrastructure
 
 dummy_env = "env"
 dummy_connection = "dummy connection"

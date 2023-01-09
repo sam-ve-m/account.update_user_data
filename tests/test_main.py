@@ -6,21 +6,21 @@ import flask
 import pytest
 from decouple import RepositoryEnv, Config
 
-from src.services.liveness import LivenessService
-from src.transports.device_info.transport import DeviceSecurity
+from func.src.services.liveness import LivenessService
+from func.src.transports.device_info.transport import DeviceSecurity
 
 with patch.object(RepositoryEnv, "__init__", return_value=None):
     with patch.object(Config, "__init__", return_value=None):
         with patch.object(Config, "__call__"):
             with patch.object(logging.config, "dictConfig"):
-                from src.domain.user_review.validator import UserUpdateData
-                from src.services.user_enumerate_data import UserEnumerateService
+                from func.src.domain.user_review.validator import UserUpdateData
+                from func.src.services.user_enumerate_data import UserEnumerateService
                 from etria_logger import Gladsheim
-                from main import update_user_data
-                from src.services.jwt import JwtService
-                from src.domain.enums.code import InternalCode
-                from src.domain.response.model import ResponseModel
-                from src.domain.exceptions.exceptions import (
+                from func.main import update_user_data
+                from func.src.services.jwt import JwtService
+                from func.src.domain.enums.code import InternalCode
+                from func.src.domain.response.model import ResponseModel
+                from func.src.domain.exceptions.exceptions import (
                     ErrorOnGetUniqueId,
                     UserUniqueIdNotExists,
                     InvalidNationality,
@@ -34,7 +34,7 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     DeviceInfoRequestFailed,
                     DeviceInfoNotSupplied,
                 )
-                from src.services.user_review import UserReviewDataService
+                from func.src.services.user_review import UserReviewDataService
 
 error_on_decode_jwt_case = (
     ErrorOnDecodeJwt(),
@@ -165,9 +165,7 @@ exception_case = (
 @patch.object(ResponseModel, "build_http_response")
 @patch.object(DeviceSecurity, "get_device_info")
 @patch.object(LivenessService, "validate")
-@patch.object(Config, "__call__")
 async def test_update_user_data_raising_errors(
-    mocked_env,
     mocked_liveness,
     device_info,
     mocked_build_response,
@@ -210,9 +208,7 @@ dummy_response = "response"
 @patch.object(ResponseModel, "build_http_response", return_value=dummy_response)
 @patch.object(DeviceSecurity, "get_device_info")
 @patch.object(LivenessService, "validate")
-@patch.object(Config, "__call__")
 async def test_update_user_data(
-    mocked_env,
     mocked_liveness,
     device_info,
     mocked_build_response,

@@ -1,10 +1,10 @@
 import pytest
 
-from src.domain.exceptions.exceptions import (
+from func.src.domain.exceptions.exceptions import (
     HighRiskActivityNotAllowed,
     InvalidEmail,
 )
-from src.domain.user_review.validator import (
+from func.src.domain.user_review.validator import (
     UserUpdateData,
     CnpjSource,
     EmailSource,

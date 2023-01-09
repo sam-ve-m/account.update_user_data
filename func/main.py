@@ -5,9 +5,9 @@ import flask
 from decouple import config
 from etria_logger import Gladsheim
 
-from src.domain.thebes_answer.model import ThebesAnswer
-from src.domain.enums.code import InternalCode
-from src.domain.exceptions.exceptions import (
+from func.src.domain.thebes_answer.model import ThebesAnswer
+from func.src.domain.enums.code import InternalCode
+from func.src.domain.exceptions.exceptions import (
     ErrorOnDecodeJwt,
     UserUniqueIdNotExists,
     ErrorOnSendAuditLog,
@@ -32,13 +32,13 @@ from src.domain.exceptions.exceptions import (
     LivenessRejected,
     ErrorInLiveness,
 )
-from src.domain.response.model import ResponseModel
-from src.domain.user_review.validator import UserUpdateData
-from src.services.jwt import JwtService
-from src.services.liveness import LivenessService
-from src.services.user_enumerate_data import UserEnumerateService
-from src.services.user_review import UserReviewDataService
-from src.transports.device_info.transport import DeviceSecurity
+from func.src.domain.response.model import ResponseModel
+from func.src.domain.user_review.validator import UserUpdateData
+from func.src.services.jwt import JwtService
+from func.src.services.liveness import LivenessService
+from func.src.services.user_enumerate_data import UserEnumerateService
+from func.src.services.user_review import UserReviewDataService
+from func.src.transports.device_info.transport import DeviceSecurity
 
 
 async def update_user_data() -> flask.Response:
@@ -56,7 +56,6 @@ async def update_user_data() -> flask.Response:
             LivenessService.validate(
                 thebes_answer.unique_id,
                 payload_validated,
-                config("KOH_FEATURE_UPDATE_USER_DATA")
             ),
             UserEnumerateService(
                 payload_validated=payload_validated, unique_id=thebes_answer.unique_id

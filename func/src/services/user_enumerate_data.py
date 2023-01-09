@@ -1,4 +1,4 @@
-from ..domain.exceptions.exceptions import (
+from func.src.domain.exceptions.exceptions import (
     InvalidNationality,
     InvalidMaritalStatus,
     InvalidCountryAcronym,
@@ -7,10 +7,10 @@ from ..domain.exceptions.exceptions import (
     InvalidActivity,
     FinancialCapacityNotValid,
 )
-from ..domain.user_enumerate.model import UserEnumerateDataModel
-from ..domain.user_review.validator import UserUpdateData
-from ..repositories.mongo_db.user.repository import UserRepository
-from ..repositories.oracle.repository import EnumerateRepository
+from func.src.domain.user_enumerate.model import UserEnumerateDataModel
+from func.src.domain.user_review.validator import UserUpdateData
+from func.src.repositories.mongo_db.user.repository import UserRepository
+from func.src.repositories.oracle.repository import EnumerateRepository
 
 from typing import List
 

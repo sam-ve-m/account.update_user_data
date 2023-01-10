@@ -57,34 +57,24 @@ spec:
               value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
             - name: HEIMDALL_REDIS_URL
               value: "redis://heimdal:FBJAnjkqw21yjewkDSA@172.30.19.183:6379?db=1"
-            - name: ORACLE_BASE_DSN
-              value: "172.30.18.44"
+            - name: ORACLE_CONNECTION_STRING
+              value: "(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=172.30.18.44)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=OPDBUAT.SUBPRIV.VCNUAT.ORACLEVCN.COM)))"
             - name: ORACLE_USER
               value: "ujormdb001"
             - name: ORACLE_PASSWORD
               value: "YhrewmJDSA76hba"
-            - name: ORACLE_SERVICE
-              value: "OPDBUAT.SUBPRIV.VCNUAT.ORACLEVCN.COM"
-            - name: ORACLE_ENCODING
-              value: "UTF-8"
-            - name: ORACLE_PORT
-              value: "1521"
             - name: ONBOARDING_STEPS_BR_URL
               value: "http://router.fission.svc.cluster.local/onboarding/steps_br"
             - name: ONBOARDING_STEPS_US_URL
               value: "http://router.fission.svc.cluster.local/onboarding/steps_us"
             - name: REGIS_REDIS_URL
               value: "redis://regis:Vbdhikjlcfgdtiyt436VCbdjk@172.30.19.183:6379"
-            - name: REGIS_ORACLE_BASE_DSN
-              value: "172.30.18.44"
-            - name: REGIS_ORACLE_PORT
-              value: "1521"
+            - name: REGIS_ORACLE_CONNECTION_STRING
+              value: "(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=172.30.18.44)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=OPDBUAT.SUBPRIV.VCNUAT.ORACLEVCN.COM)))"
             - name: REGIS_ORACLE_USER
               value: "UREGIDB001"
             - name: REGIS_ORACLE_PASSWORD
               value: "PE2Ed24Kb5WiQ05"
-            - name: REGIS_ORACLE_SERVICE
-              value: "OPDBUAT.SUBPRIV.VCNUAT.ORACLEVCN.COM"
             - name: DEVICE_SECURITY_DEVICE_ID_URL
               value: "http://router.fission.svc.cluster.local/security/deviceid"
             - name: DEVICE_SECURITY_DECRYPT_DEVICE_INFO_URL

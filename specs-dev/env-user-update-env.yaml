@@ -55,36 +55,26 @@ spec:
               value: "[]"
             - name: HEIMDALL_REDIS_URL
               value: "redis://heimdal:LLOnmUUffhaUHnewIz@172.30.11.235:6379?db=1"
-            - name: ORACLE_BASE_DSN
-              value: "172.30.10.227"
+            - name: ORACLE_CONNECTION_STRING
+              value: "(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=172.30.10.227)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=OPDBDEV.SUBPRIV.VCNDEV.ORACLEVCN.COM)))"
             - name: ORACLE_USER
               value: "ujormdb001"
-            - name: IARA_KAFKA_BROKERS
-              value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
             - name: ORACLE_PASSWORD
               value: "kALneMdsin767"
-            - name: ORACLE_SERVICE
-              value: "OPDBDEV.SUBPRIV.VCNDEV.ORACLEVCN.COM"
-            - name: ORACLE_ENCODING
-              value: "UTF-8"
-            - name: ORACLE_PORT
-              value: "1521"
+            - name: IARA_KAFKA_BROKERS
+              value: "cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
             - name: ONBOARDING_STEPS_BR_URL
               value: "http://router.fission.svc.cluster.local/onboarding/steps_br"
             - name: ONBOARDING_STEPS_US_URL
               value: "http://router.fission.svc.cluster.local/onboarding/steps_us"
             - name: REGIS_REDIS_URL
               value: "redis://regis:IUmndnhaioaODSAy674320SCBAghj@172.30.11.235:6379"
-            - name: REGIS_ORACLE_BASE_DSN
-              value: "172.30.10.227"
-            - name: REGIS_ORACLE_PORT
-              value: "1521"
+            - name: REGIS_ORACLE_CONNECTION_STRING
+              value: "(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=172.30.10.227)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=OPDBDEV.SUBPRIV.VCNDEV.ORACLEVCN.COM)))"
             - name: REGIS_ORACLE_USER
               value: "UREGIDB001"
             - name: REGIS_ORACLE_PASSWORD
               value: "S2yQ1rA3Tj8qdIL"
-            - name: REGIS_ORACLE_SERVICE
-              value: "OPDBDEV.SUBPRIV.VCNDEV.ORACLEVCN.COM"
             - name: DEVICE_SECURITY_DEVICE_ID_URL
               value: "http://router.fission.svc.cluster.local/security/deviceid"
             - name: DEVICE_SECURITY_DECRYPT_DEVICE_INFO_URL

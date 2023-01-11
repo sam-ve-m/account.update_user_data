@@ -16,7 +16,7 @@ spec:
     container:
       name: ""
       resources: {}
-    image: nexus.sigame.com.br/fission-account-update-user-data:0.1.2
+    image: nexus.sigame.com.br/fission-account-update-user-data:0.2.0-0
     podspec:
       containers:
         - name: acc-data-update-env

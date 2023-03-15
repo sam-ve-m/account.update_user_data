@@ -91,6 +91,7 @@ class UserReviewDataService:
             user_review_model=user_review_model
         )
         user_review_model.update_new_data_with_risk_data()
+        user_review_model.update_new_data_with_expiration_dates()
 
     @classmethod
     async def update_user_data(

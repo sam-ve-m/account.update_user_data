@@ -24,6 +24,7 @@ async def test_get_audit_template_to_update_risk_data_when_is_not_approved():
         risk_score=19,
         risk_rating=RiskRatings.CRITICAL_RISK,
         risk_approval=False,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
@@ -60,6 +61,7 @@ async def test_get_audit_template_to_update_risk_data_when_is_approved():
         risk_score=1,
         risk_rating=RiskRatings.LOW_RISK,
         risk_approval=True,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
@@ -95,6 +97,7 @@ async def test_update_new_data_with_risk_data():
         risk_score=1,
         risk_rating=RiskRatings.LOW_RISK,
         risk_approval=True,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
@@ -120,6 +123,7 @@ async def test_update_new_data_with_risk_data_when_rating_changed():
         risk_score=1,
         risk_rating=RiskRatings.LOW_RISK,
         risk_approval=True,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
@@ -148,6 +152,7 @@ async def test_update_new_data_with_risk_data_when_user_data_is_inconsistent():
         risk_score=1,
         risk_rating=RiskRatings.LOW_RISK,
         risk_approval=True,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,

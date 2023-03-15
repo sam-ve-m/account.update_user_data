@@ -47,6 +47,15 @@ class UserReviewModel:
                 raise InconsistentUserData()
         self.new_user_registration_data.update(risk_data_template)
 
+    def update_new_data_with_expiration_dates(self):
+        expiration_dates_template = {
+            "expiration_dates": {
+                "suitability": self.risk_data.expiration_date,
+                "register": self.risk_data.expiration_date,
+            }
+        }
+        self.new_user_registration_data.update(expiration_dates_template)
+
     async def get_audit_template_to_update_registration_data(self) -> dict:
         audit_template = {
             "unique_id": self.unique_id,

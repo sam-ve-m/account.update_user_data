@@ -489,12 +489,12 @@ stub_device_info = DeviceInfo({"precision": 1}, "")
     stub_modified_register_data,
 ) = UpdateCustomerRegistrationBuilder(
     old_personal_data=stub_user_from_database,
-    new_personal_data=stub_payload_validated,
+    new_personal_data=stub_payload_validated.dict(),
     unique_id=stub_unique_id,
 ).build()
 
 stub_user_review_model = UserReviewModel(
-    user_review_data=stub_payload_validated,
+    user_review_data=stub_payload_validated.dict(),
     unique_id=stub_unique_id,
     new_user_registration_data=stub_new_registration_data,
     modified_register_data=stub_modified_register_data,

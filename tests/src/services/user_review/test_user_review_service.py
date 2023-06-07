@@ -1,5 +1,5 @@
 from datetime import datetime
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, AsyncMock
 
 import pytest
 from etria_logger import Gladsheim
@@ -13,6 +13,7 @@ from func.src.domain.exceptions.exceptions import (
     FailedToGetData,
     InconsistentUserData,
 )
+from func.src.domain.user_review.model import UserReviewModel
 from func.src.services.user_review import UserReviewDataService
 from func.src.transports.onboarding_steps.transport import OnboardingSteps
 from func.src.domain.thebes_answer.model import ThebesAnswer
@@ -62,7 +63,9 @@ async def test_when_not_found_an_user_then_raises(mock_repository):
     "func.src.services.user_review.UserReviewDataService._get_user_data",
     return_value=stub_user_from_database,
 )
+@patch.object(UserReviewModel, "__new__")
 async def test_when_apply_rules_successfully_then_return_true(
+    mocked_model,
     mock_get_user,
     mock_audit_registration_data,
     mock_audit_pld,
@@ -71,12 +74,13 @@ async def test_when_apply_rules_successfully_then_return_true(
     iara_mock_sinacor,
     iara_mock_dw,
 ):
+    mocked_model.return_value = AsyncMock()
     result = await UserReviewDataService.update_user_data(
         unique_id=stub_unique_id,
-        payload_validated=stub_payload_validated,
-        device_info=stub_device_info,
+        payload_validated=stub_payload_validated.dict(),
     )
 
+    assert mocked_model.mock_calls[0].kwargs["device_info"] is None
     assert result is None
 
 

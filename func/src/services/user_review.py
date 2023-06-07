@@ -95,7 +95,7 @@ class UserReviewDataService:
 
     @classmethod
     async def update_user_data(
-        cls, unique_id: str, payload_validated: UserUpdateData, device_info: DeviceInfo
+        cls, unique_id: str, payload_validated: dict, device_info: DeviceInfo = None
     ):
         user_data = await UserReviewDataService._get_user_data(unique_id=unique_id)
         (

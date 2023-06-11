@@ -35,5 +35,6 @@ RUN mkdir -p /opt/envs/iara.client.python.lionx.com.br
 RUN touch /opt/envs/iara.client.python.lionx.com.br/.env
 
 COPY ./requirements.txt ./requirements.txt
-RUN pip install -r requirements.txt
+RUN --mount=type=secret,id=pipconfig,target=/root/.config/pip/pip.conf \
+pip install -r requirements.txt
 COPY ./func ./func

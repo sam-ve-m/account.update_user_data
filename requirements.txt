@@ -1,8 +1,8 @@
---extra-index-url https://backend:dc222fa6-452f-4253-a2fd-a52e7ba2e7e9@nexus.sigame.com.br/repository/pypi/simple
+--extra-index-url https://nexus.inf-lionx.com.br/repository/pypi/simple
 heimdall-client==2.3.1
 persephone-client==2.2.0
-iara-client==0.6.0
-regis==0.1.1
+iara-client==0.10.0
+regis==0.2.0
 koh==0.2.0
 
 cx-oracle-async==0.3.3

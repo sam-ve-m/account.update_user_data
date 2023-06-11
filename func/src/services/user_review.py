@@ -91,10 +91,11 @@ class UserReviewDataService:
             user_review_model=user_review_model
         )
         user_review_model.update_new_data_with_risk_data()
+        user_review_model.update_new_data_with_expiration_dates()
 
     @classmethod
     async def update_user_data(
-        cls, unique_id: str, payload_validated: UserUpdateData, device_info: DeviceInfo
+        cls, unique_id: str, payload_validated: dict, device_info: DeviceInfo = None
     ):
         user_data = await UserReviewDataService._get_user_data(unique_id=unique_id)
         (

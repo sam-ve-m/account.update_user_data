@@ -38,3 +38,8 @@ COPY ./requirements.txt ./requirements.txt
 RUN --mount=type=secret,id=pipconfig,target=/root/.config/pip/pip.conf \
 pip install -r requirements.txt
 COPY ./func ./func
+
+COPY ./.build/entrypoint.sh /opt/app/entrypoint.sh
+RUN chmod +x /opt/app/entrypoint.sh
+
+ENTRYPOINT ["/opt/app/entrypoint.sh"]

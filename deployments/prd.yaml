@@ -1,6 +1,6 @@
 replicaCount: 1
 name: fission-account-update-user-data
-namespace: homolog
+namespace: production
 
 annotations:
   sidecar.istio.io/inject: "false"

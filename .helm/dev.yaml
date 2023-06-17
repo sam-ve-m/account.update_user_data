@@ -1,0 +1,86 @@
+global:
+  application: fission-account-update-user-data
+  namespace: develop
+
+  image:
+    repository: "nexus.inf-lionx.com.br"
+    pullPolicy: Always
+    pullSecret: nexus-v3
+
+  labels:
+    external: false
+    kafka: true
+    mongo: true
+    priority: 5
+
+  serviceaccount:
+    enabled: false
+    annotations: []
+
+  configMap:
+    enabled: false
+    data: {}
+
+  revisionHistoryLimit: 4
+
+  annotations:
+    sidecar.istio.io/inject: "false"    
+
+  nameOverride: ""
+  fullnameOverride: ""
+
+  volumes:
+    enabled: false
+    name:
+    hostPath:
+
+  nodeAffinity:
+    bff: true
+
+initcontainer: 
+  enabled: true
+
+restartPolicy: Always
+
+deployment:
+  - name: fission-account-update-user-data
+    enabled: true
+    containers:    
+    - name: fission-account-update-user-data
+      tag: 0.2.0
+      imagename: fission-account-update-user-data
+      containerPorts: 8888
+
+      probes:
+        enabled: false
+      
+      env: {}
+
+      resources:
+        requests:
+          cpu: 128m
+          memory: 128Mi
+        limits:
+          cpu: 256m
+          memory: 256Mi
+
+      hpa:
+        enabled: false
+        minReplicas: 1
+        maxReplicas: 1
+        metrics:
+          cpu: 80
+          memory: 80
+
+      service:
+        enabled: true
+        name: http
+        protocol: TCP
+        annotations: []
+
+      ingress:
+        enabled: false
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt
+        className: kong
+        path: /

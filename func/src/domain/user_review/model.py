@@ -50,6 +50,7 @@ class UserReviewModel:
 
     def update_new_data_with_expiration_dates(self):
         expiration_dates_template = {
+            "record_date_control": {"current_pld_risk_rating_defined_in": self.risk_data.expiration_date},
             "expiration_dates": {
                 "suitability": self.risk_data.expiration_date,
                 "register": self.risk_data.expiration_date,

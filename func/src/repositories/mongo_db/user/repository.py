@@ -1,6 +1,6 @@
 from etria_logger import Gladsheim
 
-from ..base_repository.base import MongoDbBaseRepository
+from func.src.repositories.mongo_db.base_repository.base import MongoDbBaseRepository
 
 
 class UserRepository(MongoDbBaseRepository):

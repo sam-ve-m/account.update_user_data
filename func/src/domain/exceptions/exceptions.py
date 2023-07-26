@@ -1,3 +1,7 @@
+class InvalidApiKey(Exception):
+    msg = "Jormungandr-Onboarding::Invalid x-api-key supplied"
+
+
 class ErrorOnDecodeJwt(Exception):
     msg = (
         "Jormungandr-Onboarding::decode_jwt_and_get_unique_id::Fail when trying to get unique id,"
@@ -101,3 +105,11 @@ class DeviceInfoRequestFailed(Exception):
 
 class DeviceInfoNotSupplied(Exception):
     msg = "Device info not supplied"
+
+
+class LivenessRejected(Exception):
+    msg = "Liveness rejected"
+
+
+class ErrorInLiveness(Exception):
+    msg = "Internal Server Error in Liveness"

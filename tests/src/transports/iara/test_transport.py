@@ -4,7 +4,7 @@ import pytest
 from etria_logger import Gladsheim
 from iara_client import Iara
 
-from src.transports.iara.transport import IaraTransport
+from func.src.transports.iara.transport import IaraTransport
 
 stub_user = MagicMock()
 

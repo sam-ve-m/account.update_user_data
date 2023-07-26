@@ -1,4 +1,4 @@
-from .base_repository import OracleBaseRepository
+from func.src.repositories.oracle.base_repository import OracleBaseRepository
 
 from typing import List
 

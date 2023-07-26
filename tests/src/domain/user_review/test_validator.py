@@ -1,10 +1,10 @@
 import pytest
 
-from src.domain.exceptions.exceptions import (
+from func.src.domain.exceptions.exceptions import (
     HighRiskActivityNotAllowed,
     InvalidEmail,
 )
-from src.domain.user_review.validator import (
+from func.src.domain.user_review.validator import (
     UserUpdateData,
     CnpjSource,
     EmailSource,
@@ -14,6 +14,7 @@ from src.domain.user_review.validator import (
 )
 
 register_dummy = {
+    "liveness": "",
     "personal": {
         "name": {"source": "app", "value": "Rosa Jessica"},
         "nick_name": {"source": "app", "value": "Rosinha"},
@@ -38,7 +39,6 @@ register_dummy = {
         "cpf": {"source": "app", "value": "72772117073"},
         "identity_type": {"source": "app", "value": "CH"},
         "identity_number": {"source": "app", "value": "06713096255"},
-        "expedition_date": {"source": "app", "value": 1600697312},
         "issuer": {"source": "app", "value": "SSP"},
         "state": {"source": "app", "value": "SP"},
     },

@@ -6,20 +6,21 @@ import flask
 import pytest
 from decouple import RepositoryEnv, Config
 
-from src.transports.device_info.transport import DeviceSecurity
+from func.src.services.liveness import LivenessService
+from func.src.transports.device_info.transport import DeviceSecurity
 
 with patch.object(RepositoryEnv, "__init__", return_value=None):
     with patch.object(Config, "__init__", return_value=None):
         with patch.object(Config, "__call__"):
             with patch.object(logging.config, "dictConfig"):
-                from src.domain.user_review.validator import UserUpdateData
-                from src.services.user_enumerate_data import UserEnumerateService
+                from func.src.domain.user_review.validator import UserUpdateData
+                from func.src.services.user_enumerate_data import UserEnumerateService
                 from etria_logger import Gladsheim
-                from main import update_user_data
-                from src.services.jwt import JwtService
-                from src.domain.enums.code import InternalCode
-                from src.domain.response.model import ResponseModel
-                from src.domain.exceptions.exceptions import (
+                from func.main import update_user_data
+                from func.src.services.jwt import JwtService
+                from func.src.domain.enums.code import InternalCode
+                from func.src.domain.response.model import ResponseModel
+                from func.src.domain.exceptions.exceptions import (
                     ErrorOnGetUniqueId,
                     UserUniqueIdNotExists,
                     InvalidNationality,
@@ -33,7 +34,7 @@ with patch.object(RepositoryEnv, "__init__", return_value=None):
                     DeviceInfoRequestFailed,
                     DeviceInfoNotSupplied,
                 )
-                from src.services.user_review import UserReviewDataService
+                from func.src.services.user_review import UserReviewDataService
 
 error_on_decode_jwt_case = (
     ErrorOnDecodeJwt(),
@@ -163,7 +164,9 @@ exception_case = (
 @patch.object(UserUpdateData, "__init__", return_value=None)
 @patch.object(ResponseModel, "build_http_response")
 @patch.object(DeviceSecurity, "get_device_info")
+@patch.object(LivenessService, "validate")
 async def test_update_user_data_raising_errors(
+    mocked_liveness,
     device_info,
     mocked_build_response,
     mocked_model,
@@ -190,6 +193,43 @@ async def test_update_user_data_raising_errors(
     mocked_build_response.assert_called_once_with(status=response_status_code)
 
 
+@pytest.mark.asyncio
+@patch.object(Gladsheim, "error")
+@patch.object(JwtService, "decode_jwt", return_value={"user": {"unique_id": "id"}})
+@patch.object(UserEnumerateService, "__init__", return_value=None)
+@patch.object(UserEnumerateService, "validate_enumerate_params")
+@patch.object(UserReviewDataService, "update_user_data")
+@patch.object(UserReviewDataService, "check_if_able_to_update")
+@patch.object(UserUpdateData, "__init__", return_value=None)
+@patch.object(ResponseModel, "__init__", return_value=None)
+@patch.object(ResponseModel, "build_http_response")
+@patch.object(DeviceSecurity, "get_device_info")
+@patch.object(LivenessService, "validate")
+async def test_update_user_review_without_headers(
+    mocked_liveness,
+    device_info,
+    mocked_build_response,
+    mocked_response_instance,
+    mocked_rules_application,
+    mocked_validation_step,
+    mocked_validation_server_instance,
+    mocked_validation,
+    mocked_instance,
+    mocked_jwt_decode,
+    mocked_logger,
+    monkeypatch,
+):
+    request_mock = MagicMock()
+    request_mock.headers.get.return_value = None
+    monkeypatch.setattr(flask, "request", request_mock)
+    await update_user_data()
+    mocked_validation.assert_not_called()
+    mocked_logger.assert_called_once()
+    mocked_response_instance.assert_called_once_with(
+        success=False, code=InternalCode.JWT_INVALID, message="Error when trying to decode jwt"
+    )
+    mocked_build_response.assert_called_once_with(status=HTTPStatus.UNAUTHORIZED)
+
 dummy_response = "response"
 
 
@@ -204,7 +244,9 @@ dummy_response = "response"
 @patch.object(ResponseModel, "__init__", return_value=None)
 @patch.object(ResponseModel, "build_http_response", return_value=dummy_response)
 @patch.object(DeviceSecurity, "get_device_info")
+@patch.object(LivenessService, "validate")
 async def test_update_user_data(
+    mocked_liveness,
     device_info,
     mocked_build_response,
     mocked_response_instance,
@@ -228,3 +270,135 @@ async def test_update_user_data(
     )
     mocked_build_response.assert_called_once_with(status=HTTPStatus.OK)
     assert dummy_response == response
+
+
+@pytest.mark.asyncio
+@patch.object(UserReviewDataService, "check_if_able_to_update")
+@patch.object(Gladsheim, "error")
+@patch.object(JwtService, "decode_jwt")
+@patch.object(UserEnumerateService, "__init__", return_value=None)
+@patch.object(UserEnumerateService, "validate_enumerate_params")
+@patch.object(UserReviewDataService, "update_user_data")
+@patch.object(UserUpdateData, "__init__", return_value=None)
+@patch.object(ResponseModel, "__init__", return_value=None)
+@patch.object(Config, "__call__")
+@patch.object(ResponseModel, "build_http_response", return_value=dummy_response)
+@patch.object(DeviceSecurity, "get_device_info")
+async def test_update_user_risk(
+    device_info,
+    mocked_build_response,
+    mocked_config,
+    mocked_response_instance,
+    mocked_model,
+    mocked_rules_application,
+    mocked_validation_server_instance,
+    mocked_instance,
+    mocked_jwt_decode,
+    mocked_logger,
+    mocked_service,
+    monkeypatch,
+):
+    request_mock = MagicMock()
+    mocked_config.return_value = "api_key"
+    request_mock.headers.get.side_effect = None, "api_key", "unique_id"
+    monkeypatch.setattr(flask, "request", request_mock)
+    response = await update_user_data()
+    mocked_jwt_decode.assert_not_called()
+    mocked_service.assert_not_called()
+    mocked_rules_application.assert_called()
+    mocked_logger.assert_not_called()
+    mocked_response_instance.assert_called_once_with(
+        success=True,
+        code=InternalCode.SUCCESS,
+        message="User data successfully updated",
+    )
+    mocked_build_response.assert_called_once_with(status=HTTPStatus.OK)
+    assert dummy_response == response
+
+
+@pytest.mark.asyncio
+@patch.object(UserReviewDataService, "check_if_able_to_update")
+@patch.object(Gladsheim, "error")
+@patch.object(JwtService, "decode_jwt")
+@patch.object(UserReviewDataService, "check_if_able_to_update")
+@patch.object(UserEnumerateService, "__init__", return_value=None)
+@patch.object(UserEnumerateService, "validate_enumerate_params")
+@patch.object(UserReviewDataService, "update_user_data")
+@patch.object(UserUpdateData, "__init__", return_value=None)
+@patch.object(ResponseModel, "__init__", return_value=None)
+@patch.object(Config, "__call__")
+@patch.object(ResponseModel, "build_http_response", return_value=dummy_response)
+@patch.object(DeviceSecurity, "get_device_info")
+async def test_update_user_risk_invalid_api_key(
+    device_info,
+    mocked_build_response,
+    mocked_config,
+    mocked_response_instance,
+    mocked_model,
+    mocked_rules_application,
+    mocked_validation_server_instance,
+    mocked_instance,
+    mocked_validation,
+    mocked_jwt_decode,
+    mocked_logger,
+    mocked_service,
+    monkeypatch,
+):
+    request_mock = MagicMock()
+    mocked_config.return_value = "api_key"
+    request_mock.headers.get.side_effect = None, "invalid_api_key", "unique_id"
+    monkeypatch.setattr(flask, "request", request_mock)
+    await update_user_data()
+    mocked_jwt_decode.assert_not_called()
+    mocked_service.assert_not_called()
+    mocked_rules_application.assert_not_called()
+    mocked_service.assert_not_called()
+    mocked_logger.assert_called_once()
+    mocked_response_instance.assert_called_once_with(
+        success=False, code=InternalCode.JWT_INVALID, message="Invalid Api Key"
+    )
+    mocked_build_response.assert_called_once_with(status=HTTPStatus.UNAUTHORIZED)
+
+
+@pytest.mark.asyncio
+@patch.object(UserReviewDataService, "check_if_able_to_update")
+@patch.object(Gladsheim, "error")
+@patch.object(JwtService, "decode_jwt")
+@patch.object(UserReviewDataService, "check_if_able_to_update")
+@patch.object(UserEnumerateService, "__init__", return_value=None)
+@patch.object(UserEnumerateService, "validate_enumerate_params")
+@patch.object(UserReviewDataService, "update_user_data")
+@patch.object(UserUpdateData, "__init__", return_value=None)
+@patch.object(ResponseModel, "__init__", return_value=None)
+@patch.object(Config, "__call__")
+@patch.object(ResponseModel, "build_http_response", return_value=dummy_response)
+@patch.object(DeviceSecurity, "get_device_info")
+async def test_update_user_risk_invalid_unique_id(
+    device_info,
+    mocked_build_response,
+    mocked_config,
+    mocked_response_instance,
+    mocked_model,
+    mocked_rules_application,
+    mocked_validation_server_instance,
+    mocked_instance,
+    mocked_validation,
+    mocked_jwt_decode,
+    mocked_logger,
+    mocked_service,
+    monkeypatch,
+):
+    request_mock = MagicMock()
+    mocked_config.return_value = "api_key"
+    request_mock.headers.get.side_effect = None, "api_key", None
+    monkeypatch.setattr(flask, "request", request_mock)
+    await update_user_data()
+    mocked_jwt_decode.assert_not_called()
+    mocked_service.assert_not_called()
+    mocked_rules_application.assert_not_called()
+    mocked_service.assert_not_called()
+    mocked_logger.assert_called_once()
+    mocked_response_instance.assert_called_once_with(
+        success=False, code=InternalCode.INVALID_PARAMS, message="Invalid params"
+    )
+    mocked_build_response.assert_called_once_with(status=HTTPStatus.BAD_REQUEST)

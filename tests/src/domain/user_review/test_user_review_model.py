@@ -1,10 +1,12 @@
 from copy import deepcopy
 from datetime import datetime
+from unittest.mock import MagicMock
 
 import pytest
 from regis import RegisResponse, RiskValidations, RiskRatings
 
 from func.src.domain.exceptions.exceptions import InconsistentUserData
+from func.src.domain.user_review.model import UserReviewModel
 from tests.src.services.user_review.stubs import stub_user_review_model
 
 
@@ -14,6 +16,7 @@ async def test_when_get_new_user_data_then_remove_pymongo_id():
     assert isinstance(result, dict)
     assert result.get("_id") is None
     assert stub_user_review_model.risk_data is None
+    assert stub_user_review_model.risk_rating_changed is None
 
 
 @pytest.mark.asyncio
@@ -23,6 +26,7 @@ async def test_get_audit_template_to_update_risk_data_when_is_not_approved():
         risk_score=19,
         risk_rating=RiskRatings.CRITICAL_RISK,
         risk_approval=False,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
@@ -59,6 +63,7 @@ async def test_get_audit_template_to_update_risk_data_when_is_approved():
         risk_score=1,
         risk_rating=RiskRatings.LOW_RISK,
         risk_approval=True,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
@@ -94,6 +99,7 @@ async def test_update_new_data_with_risk_data():
         risk_score=1,
         risk_rating=RiskRatings.LOW_RISK,
         risk_approval=True,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
@@ -109,6 +115,7 @@ async def test_update_new_data_with_risk_data():
     }
     result = model_stub.update_new_data_with_risk_data()
     assert pld_data_expected == model_stub.new_user_registration_data.get("pld")
+    assert model_stub.new_user_registration_data["record_date_control"]["current_pld_risk_rating_defined_in"] == 0
 
 
 @pytest.mark.asyncio
@@ -118,6 +125,7 @@ async def test_update_new_data_with_risk_data_when_rating_changed():
         risk_score=1,
         risk_rating=RiskRatings.LOW_RISK,
         risk_approval=True,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
@@ -146,6 +154,7 @@ async def test_update_new_data_with_risk_data_when_user_data_is_inconsistent():
         risk_score=1,
         risk_rating=RiskRatings.LOW_RISK,
         risk_approval=True,
+        expiration_date=datetime.now(),
         risk_validations=RiskValidations(
             has_big_patrymony=True,
             lives_in_frontier_city=True,
@@ -158,3 +167,34 @@ async def test_update_new_data_with_risk_data_when_user_data_is_inconsistent():
     model_stub.new_user_registration_data = {}
     with pytest.raises(InconsistentUserData):
         result = model_stub.update_new_data_with_risk_data()
+
+
+@pytest.mark.asyncio
+async def test_get_templates_without_device_id():
+    stub = MagicMock()
+    result = await UserReviewModel.get_audit_template_to_update_registration_data(stub)
+    expected_result = {
+        "unique_id": stub.unique_id,
+        "modified_register_data": stub.modified_register_data,
+        "update_customer_registration_data": stub.user_review_data,
+        "device_info": stub.device_info.device_info,
+        "device_id": stub.device_info.device_id
+    }
+    assert result == expected_result
+    stub.device_info = None
+    result = await UserReviewModel.get_audit_template_to_update_registration_data(stub)
+    expected_result = {
+        "unique_id": stub.unique_id,
+        "modified_register_data": stub.modified_register_data,
+        "update_customer_registration_data": stub.user_review_data,
+    }
+    assert result == expected_result
+    result = await UserReviewModel.get_audit_template_to_update_risk_data(stub)
+    expected_result = {
+        "unique_id": stub.unique_id,
+        "score": stub.risk_data.risk_score,
+        "rating": stub.risk_data.risk_rating.value,
+        "approval": stub.risk_data.risk_approval,
+        "validations": stub.risk_data.risk_validations.to_dict(),
+    }
+    assert result == expected_result

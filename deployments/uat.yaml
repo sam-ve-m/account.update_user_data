@@ -1,0 +1,39 @@
+replicaCount: 1
+name: fission-account-update-user-data
+namespace: homolog
+
+annotations:
+  sidecar.istio.io/inject: "false"
+
+initcontainer:
+  enabled: true
+
+containers:
+  - name: fission-account-update-user-data
+    image: nexus.inf-lionx.com.br/fission-account-update-user-data:0.2.1
+    ports:
+      - containerPort: 8888
+
+imagePullSecrets:
+  - name: nexus-v3
+
+service:
+  name: fission-account-update-user-data
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8888
+
+labels:
+  app: fission-account-update-user-data
+
+resources:
+  requests:
+    cpu: 128m
+    memory: 128Mi
+  limits:
+    cpu: 256m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false

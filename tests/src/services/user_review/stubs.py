@@ -7,11 +7,12 @@ from func.src.services.builders.user_registration_update import (
 
 import datetime
 
-from src.domain.models.device_info import DeviceInfo
+from func.src.domain.models.device_info import DeviceInfo
 
 stub_unique_id = "451baf5a-9cd5-4037-aa17-fbd0fcef66c8"
 
 stub_payload = {
+    "liveness": "",
     "personal": {
         "name": {"value": "Fulaninho da Silva Sauro", "source": "by_test"},
         "nick_name": {"value": "RAST3", "source": "by_test"},
@@ -51,7 +52,6 @@ stub_payload = {
         "cpf": {"value": "53845387084", "source": "by_test"},
         "identity_type": {"value": "RG", "source": "by_test"},
         "identity_number": {"value": "385722594", "source": "by_test"},
-        "expedition_date": {"value": 750124800.0, "source": "by_test"},
         "issuer": {"value": "SSP", "source": "by_test"},
         "state": {"value": "SP", "source": "by_test"},
     },
@@ -68,6 +68,7 @@ stub_payload = {
 }
 
 stub_payload_missing_data = {
+    "liveness": "",
     "personal": {
         "name": {"value": "Fulaninho da Silva Sauro", "source": "by_test"},
         "nick_name": {"value": "RAST3", "source": "by_test"},
@@ -96,7 +97,6 @@ stub_payload_missing_data = {
         "cpf": {"value": "53845387084", "source": "by_test"},
         "identity_type": {"value": "RG", "source": "by_test"},
         "identity_number": {"value": "385722594", "source": "by_test"},
-        "expedition_date": {"value": 750124800.0, "source": "by_test"},
         "issuer": {"value": "SSP", "source": "by_test"},
         "state": {"source": "by_test"},
     },
@@ -489,12 +489,12 @@ stub_device_info = DeviceInfo({"precision": 1}, "")
     stub_modified_register_data,
 ) = UpdateCustomerRegistrationBuilder(
     old_personal_data=stub_user_from_database,
-    new_personal_data=stub_payload_validated,
+    new_personal_data=stub_payload_validated.dict(),
     unique_id=stub_unique_id,
 ).build()
 
 stub_user_review_model = UserReviewModel(
-    user_review_data=stub_payload_validated,
+    user_review_data=stub_payload_validated.dict(),
     unique_id=stub_unique_id,
     new_user_registration_data=stub_new_registration_data,
     modified_register_data=stub_modified_register_data,

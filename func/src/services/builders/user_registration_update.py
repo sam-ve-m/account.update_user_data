@@ -6,10 +6,10 @@ from typing import Tuple, Optional
 
 class UpdateCustomerRegistrationBuilder:
     def __init__(
-        self, old_personal_data: dict, new_personal_data: UserUpdateData, unique_id: str
+        self, old_personal_data: dict, new_personal_data: dict, unique_id: str
     ):
         self.__old_personal_data = old_personal_data
-        self.__new_personal_data = new_personal_data.dict()
+        self.__new_personal_data = new_personal_data
         self.__unique_id = unique_id
         self.__update_buffer = old_personal_data.copy()
         self.__modified_data = []
@@ -366,23 +366,6 @@ class UpdateCustomerRegistrationBuilder:
             )
         return self
 
-    def documents_expedition_date(self):
-        old_document_expedition_date = (
-            self.__old_personal_data.get("identifier_document", {})
-            .get("document_data", {})
-            .get("date")
-        )
-
-        if new_document_expedition_date := self._get_new_value(
-            "documents", "expedition_date"
-        ):
-            self._update_modified_data(
-                levels=("identifier_document", "document_data", "date"),
-                old_field=old_document_expedition_date,
-                new_filed=new_document_expedition_date,
-            )
-        return self
-
     def documents_issuer(self):
         old_document_issuer = (
             self.__old_personal_data.get("identifier_document", {})
@@ -705,7 +688,6 @@ class UpdateCustomerRegistrationBuilder:
             .documents_cpf()
             .documents_identity_type()
             .documents_identity_number()
-            .documents_expedition_date()
             .documents_issuer()
             .documents_state()
             .address_country()

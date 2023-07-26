@@ -2,7 +2,7 @@ from unittest.mock import patch, MagicMock, AsyncMock
 
 import pytest
 
-from src.domain.exceptions.exceptions import (
+from func.src.domain.exceptions.exceptions import (
     InvalidCity,
     InvalidState,
     InvalidMaritalStatus,
@@ -13,9 +13,9 @@ from src.domain.exceptions.exceptions import (
 )
 
 
-from src.domain.user_enumerate.model import UserEnumerateDataModel
-from src.repositories.mongo_db.user.repository import UserRepository
-from src.services.user_enumerate_data import UserEnumerateService
+from func.src.domain.user_enumerate.model import UserEnumerateDataModel
+from func.src.repositories.mongo_db.user.repository import UserRepository
+from func.src.services.user_enumerate_data import UserEnumerateService
 from tests.src.services.user_review.stubs import (
     stub_payload_validated,
     stub_payload_missing_data,
@@ -78,7 +78,7 @@ def enumerate_model_missing_country_and_spouse():
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_city",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_city",
     return_value=1,
 )
 async def test_when_combination_place_is_valid_then_return_none(
@@ -96,7 +96,7 @@ async def test_when_combination_place_is_valid_then_return_none(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_city",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_city",
     return_value=1,
 )
 async def test_when_combination_place_is_valid_none(
@@ -111,7 +111,7 @@ async def test_when_combination_place_is_valid_none(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_city",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_city",
     return_value=None,
 )
 async def test_when_combination_place_is_invalid_then_raises(
@@ -129,7 +129,7 @@ async def test_when_combination_place_is_invalid_then_raises(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_state",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_state",
     return_value=True,
 )
 async def test_when_valid_state_then_return_none(
@@ -141,7 +141,7 @@ async def test_when_valid_state_then_return_none(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_state",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_state",
     return_value=True,
 )
 async def test_when_valid_state_none(
@@ -154,7 +154,7 @@ async def test_when_valid_state_none(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_state",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_state",
     return_value=False,
 )
 async def test_when_invalid_state_then_raises(
@@ -166,7 +166,7 @@ async def test_when_invalid_state_then_raises(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_marital_status",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_marital_status",
     return_value=True,
 )
 async def test_when_valid_marital_status_then_return_none(
@@ -180,7 +180,7 @@ async def test_when_valid_marital_status_then_return_none(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_marital_status",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_marital_status",
     return_value=True,
 )
 async def test_when_valid_marital_status_none(
@@ -195,7 +195,7 @@ async def test_when_valid_marital_status_none(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_marital_status",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_marital_status",
     return_value=False,
 )
 async def test_when_invalid_marital_status_then_raises(
@@ -209,7 +209,7 @@ async def test_when_invalid_marital_status_then_raises(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_activity",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_activity",
     return_value=True,
 )
 async def test_when_valid_activity_code_then_return_none(
@@ -223,7 +223,7 @@ async def test_when_valid_activity_code_then_return_none(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_activity",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_activity",
     return_value=True,
 )
 async def test_when_valid_activity_code_none(
@@ -238,7 +238,7 @@ async def test_when_valid_activity_code_none(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_activity",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_activity",
     return_value=False,
 )
 async def test_when_invalid_activity_then_raises(
@@ -250,7 +250,7 @@ async def test_when_invalid_activity_then_raises(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_nationality",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_nationality",
     side_effect=[True, True],
 )
 async def test_when_valid_nationality_then_return_none(
@@ -264,7 +264,7 @@ async def test_when_valid_nationality_then_return_none(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_nationality",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_nationality",
     side_effect=[True, True],
 )
 async def test_when_valid_nationality_none(
@@ -279,7 +279,7 @@ async def test_when_valid_nationality_none(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_nationality",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_nationality",
     side_effect=[False, True],
 )
 async def test_when_invalid_nationality_then_raises(
@@ -301,7 +301,7 @@ async def test_when_no_countries_then_return_none_(enumerate_service_missing_som
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_country",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_country",
     side_effect=[True, True],
 )
 async def test_when_valid_countries_then_return_none(
@@ -315,7 +315,7 @@ async def test_when_valid_countries_then_return_none(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_country",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_country",
     side_effect=[True, True],
 )
 async def test_when_valid_countries_none(
@@ -330,7 +330,7 @@ async def test_when_valid_countries_none(
 
 @pytest.mark.asyncio
 @patch(
-    "src.services.user_enumerate_data.EnumerateRepository.get_country",
+    "func.src.services.user_enumerate_data.EnumerateRepository.get_country",
     side_effect=[False, True],
 )
 async def test_when_invalid_country_then_raises(

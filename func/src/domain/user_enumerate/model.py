@@ -1,4 +1,4 @@
-from ...domain.user_review.validator import UserUpdateData
+from func.src.domain.user_review.validator import UserUpdateData
 
 from typing import Optional, Any
 
